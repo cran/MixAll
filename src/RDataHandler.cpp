@@ -23,7 +23,7 @@
 */
 
 /*
- * Project:  rtkpp
+ * Project:  MixAll
  * created on: 8 août 2014
  * Author:   iovleff, S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
  **/
@@ -33,11 +33,10 @@
  **/
 
 #include "RTKpp.h"
+#include "RDataHandler.h"
 
-namespace STK
-{
 /* default constructor */
-RDataHandler::RDataHandler() : IDataHandler(), nbSample_(0), nbVariable_(0) {}
+RDataHandler::RDataHandler() : STK::IDataHandler(), nbSample_(0), nbVariable_(0) {}
 
 bool RDataHandler::addType(std::string const& idData, int Rtype)
 {
@@ -59,4 +58,3 @@ bool RDataHandler::addType(std::string const& idData, int Rtype)
   return true;
 }
 
-} // namespace STK
