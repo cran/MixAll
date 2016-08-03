@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------
-#     Copyright (C) 2012-2014  Serge Iovleff, University Lille 1, Inria
+#     Copyright (C) 2012-2016  Serge Iovleff, University Lille 1, Inria
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as
@@ -22,8 +22,8 @@
 #    Contact : S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
 #
 #-----------------------------------------------------------------------
-#' MixAll allows to estimate parametric mixture models with heterogeneous data
-#' set and missing data.
+#' MixAll allows to estimate parametric mixture models with mixed data
+#' sets and missing data.
 #'
 #' This package contains methods allowing R users to use the clustering methods
 #' of the STK++ library.
@@ -46,8 +46,8 @@
 #' multivariate counting data sets using Poisson multidimensional models (8 models).
 #'    \item the \link{clusterKernel} method allowing to discover group structures in
 #' any data sets using kernel trick (4 models).
-#'    \item the clusterHeterogeneous method allowing to discover group structures in
-#' heterogeneous data sets.
+#'    \item the \link{clusterMixedData} method allowing to discover group structures in
+#' mixed data sets.
 #'  }
 #'
 #' \tabular{ll}{
@@ -289,8 +289,8 @@ NULL
 #'        1: upsloping,
 #'        2: flat,
 #'        3: downsloping}
-#' \item{\code{ca}}{number of major vessels (0-3) colored by flourosopy}
-#' \item{\code{thal}}{3 = normal; 6 = fixed defect; 7 = reversable defect}
+#' \item{\code{ca}}{number of major vessels (0-3) colored by flourosopy (4 missing values)}
+#' \item{\code{thal}}{3 = normal; 6 = fixed defect; 7 = reversable defect (2 missing values)}
 #' \item{\code{ num}}{diagnosis of heart disease (angiographic disease status).
 #'               0: < 50% diameter narrowing
 #'               1: > 50% diameter narrowing

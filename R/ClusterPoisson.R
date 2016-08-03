@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------
-#     Copyright (C) 2012-2014  Serge Iovleff, University Lille 1, Inria
+#     Copyright (C) 2012-2016  Serge Iovleff, University Lille 1, Inria
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as
@@ -29,7 +29,7 @@ NULL
 #' Create an instance of the [\code{\linkS4class{ClusterPoisson}}] class
 #'
 #' This function computes the optimal poisson mixture model according
-#' to the [\code{criterion}] among the list of model given in [\code{modelNames}]
+#' to the [\code{criterion}] among the list of model given in [\code{models}]
 #' and the number of clusters given in [\code{nbCluster}], using the strategy
 #' specified in [\code{strategy}].
 #'
@@ -37,7 +37,7 @@ NULL
 #' and columns correspond to variables. If the data set contains NA values, they
 #' will be estimated during the estimation process.
 #' @param nbCluster  [\code{\link{vector}}] listing the number of clusters to test.
-#' @param modelNames [\code{\link{vector}}] of model names to run. By default all
+#' @param models [\code{\link{vector}}] of model names to run. By default all
 #' poisson models are estimated.  All the model names are given by
 #' the method [\code{\link{clusterPoissonNames}}].
 #' @param strategy a [\code{\linkS4class{ClusterStrategy}}] object containing
@@ -53,7 +53,7 @@ NULL
 #' dt <- DebTrivedi[1:500, c(1, 6,8, 15)]
 #'
 #' model <- clusterPoisson( data=dt, nbCluster=2
-#'                        , modelNames=clusterPoissonNames(prop = "equal")
+#'                        , models=clusterPoissonNames(prop = "equal")
 #'                        , strategy = clusterFastStrategy())
 #'
 #' ## use graphics functions
@@ -75,7 +75,7 @@ NULL
 #' @export
 #'
 clusterPoisson <- function( data, nbCluster=2
-                          , modelNames= clusterPoissonNames()
+                          , models= clusterPoissonNames()
                           , strategy=clusterFastStrategy()
                           , criterion="ICL"
                           , nbCore = 1)
@@ -95,10 +95,10 @@ clusterPoisson <- function( data, nbCluster=2
   if (nrow(data) <= 3*nbClusterMax) {stop("There is not enough individuals (rows) in the data set")}
   if (ncol(data) < 1) {stop("Error: empty data set")}
 
-  # check modelNames
-  if (is.null(modelNames)) { modelNames = clusterPoissonNames()}
-  if (!clusterValidPoissonNames(modelNames))
-  { stop("modelNames is not valid. See ?clusterPoissonNames for the list of valid model names")}
+  # check models
+  if (is.null(models)) { models = clusterPoissonNames()}
+  if (!clusterValidPoissonNames(models))
+  { stop("models is not valid. See ?clusterPoissonNames for the list of valid model names")}
 
   # check strategy
   if(class(strategy)[1] != "ClusterStrategy")
@@ -110,7 +110,7 @@ clusterPoisson <- function( data, nbCluster=2
   model@strategy = strategy;
 
   # start estimation of the models
-  resFlag = .Call("clusterMixture", model, nbCluster, modelNames, strategy, criterion, nbCore, PACKAGE="MixAll")
+  resFlag = .Call("clusterMixture", model, nbCluster, models, strategy, criterion, nbCore, PACKAGE="MixAll")
 
   # set names
   if (resFlag != 1) {cat("WARNING: An error occur during the clustering process")}
@@ -229,7 +229,7 @@ setMethod(
 
 #' Definition of the [\code{\linkS4class{ClusterPoisson}}] class
 #'
-#' This class inherits from the [\code{\linkS4class{IClusterModelBase}}] class.
+#' This class inherits from the [\code{\linkS4class{IClusterModel}}] class.
 #' A poisson mixture model is a mixture model of the form:
 #' \deqn{
 #'   f({x}|\boldsymbol{\theta}) \\
@@ -239,7 +239,7 @@ setMethod(
 #'
 #' @slot component  A [\code{\linkS4class{ClusterPoissonComponent}}] with the
 #' lambda of the component mixture model.
-#' @seealso [\code{\linkS4class{IClusterModelBase}}] class
+#' @seealso [\code{\linkS4class{IClusterModel}}] class
 #'
 #' @examples
 #'   getSlots("ClusterPoisson")
@@ -257,7 +257,7 @@ setMethod(
 setClass(
     Class="ClusterPoisson",
     representation( component = "ClusterPoissonComponent"),
-    contains=c("IClusterModelBase"),
+    contains=c("IClusterModel"),
     validity=function(object)
     {
       if (ncol(object@component@lambda)!=ncol(object@component@data))
@@ -335,7 +335,7 @@ setMethod(
 )
 
 #' @rdname summary-methods
-#' @aliases summary summary,MixmodResults-method
+#' @aliases summary summary,ClusterPoisson-method
 #'
 setMethod(
   f="summary",
@@ -348,6 +348,70 @@ setMethod(
     cat("**************************************************************\n")
   }
 )
+
+## #-----------------------------------------------------------------------
+## #' Definition of the [\code{\linkS4class{PredictPoisson}}] class
+## #'
+## #' This class defines a predictor for diagonal Gaussian mixture Model.
+## #'
+## #' @slot model  A valid [\code{\linkS4class{ClusterDiagGaussian}}] class.
+## #' @slot data   A matrix with the data to predict.
+## #' @seealso [\code{\linkS4class{IClusterModel}}] class
+## #'
+## #' @examples
+## #' getSlots("PredictPoisson")
+## #'
+## #' @author Serge Iovleff
+## #'
+## #' @name PredictPoisson
+## #' @rdname PredictPoisson-class
+## #' @aliases PredictPoisson-class
+## #' @exportClass PredictPoisson
+## #'
+## setClass(
+##     Class="PredictPoisson",
+##     representation( model = "ClusterPoisson", data = "matrix"),
+##     contains=c("IClusterPredict"),
+##     validity=function(object)
+##     {
+##       # check model
+##       if(class(object@model)[1] != "ClusterPoisson")
+##       { stop("model must be an instance of ClusterPoisson.")}
+##       if (!validObject(object@model)) {stop("model is not valid.")}
+##       # check data
+##       if (ncol(object@model@component@data)!= ncol(object@data))
+##       {stop("data must have the same number of column.")}
+##       return(TRUE)
+##     }
+## )
+## 
+## #' Initialize an instance of a MixAll S4 class.
+## #'
+## #' Initialization method of the [\code{\linkS4class{PredictPoisson}}] class.
+## #' Used internally in the 'MixAll' package.
+## #'
+## #' @rdname initialize-methods
+## #' @keywords internal
+## setMethod(
+##     f="initialize",
+##     signature=c("PredictPoisson"),
+##     definition=function(.Object, model, data)
+##     {
+##       # check model
+##       if(missing(model)) {stop("model is mandatory in PredictPoisson.")}
+##       if(class(model)[1] != "ClusterDiagGaussian")
+##       { stop("model must be an instance of ClusterPoisson.")}
+##       # for data
+##       if(missing(data)) {stop("data is mandatory in PredictPoisson.")}
+##       # create slots
+##       .Object@model <- model
+##       .Object@data <- as.matrix(data, ncol= ncol(model@component@data))
+##       # validate
+##       .Object <- callNextMethod(.Object, nrow(.Object@data), .Object@model@nbCluster);
+##       validObject(.Object)
+##       return(.Object)
+##     }
+## )
 
 #' Plotting of a class [\code{\linkS4class{ClusterPoisson}}]
 #'

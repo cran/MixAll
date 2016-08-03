@@ -1,24 +1,26 @@
 Package: MixAll
-Version: 1.1.1
-Date: 2015-08-31
+Version: 1.2.0
+Date: 2016-08-01
 Title: Clustering using Mixture Models
-Authors@R: c(person("Serge", "Iovleff", role = c("aut","cre"), email =
-    "Serge.Iovleff@stkpp.org"))
-Copyright: inria 2013-2015
-Depends: R (>= 3.0.2), rtkpp (>= 0.9.2),
+Authors@R: c(person("Serge", "Iovleff", role = c("aut","cre"), email = "Serge.Iovleff@stkpp.org"))
+Copyright: inria, University Lille 1
+Depends: R (>= 3.0.2), rtkore (>= 1.1.0)
 Imports: methods
-Description: Algorithms and methods for estimating parametric mixture models with missing data.
+Description: Algorithms and methods for estimating parametric mixture models for
+    mixed data and with missing data.
 License: GPL (>= 2)
-LinkingTo: Rcpp, rtkpp
+LinkingTo: Rcpp
 SystemRequirements: GNU make
-Collate: 'global.R' 'MixAll.R' 'ClusterAlgo.R' 'ClusterInit.R'
-        'ClusterStrategy.R' 'ClusterModelNames.R' 'IClusterModel.R'
+Collate: 'ClusterAlgo.R' 'ClusterInit.R' 'ClusterStrategy.R'
+        'IClusterModel.R' 'ClusterModelNames.R' 'global.R'
         'ClusterCategorical.R' 'ClusterDiagGaussian.R' 'ClusterGamma.R'
-        'ClusterPoisson.R' 'ClusterHeterogeneous.R' 'ClusterKernel.R'
-        'ClusterPlot.R' 'missingValues.R'
+        'ClusterKernel.R' 'ClusterMixedData.R' 'ClusterPlot.R'
+        'ClusterPoisson.R' 'LearnAlgo.R' 'Learners.R' 'MixAll.R'
+        'missingValues.R'
+RoxygenNote: 5.0.1
 NeedsCompilation: yes
-Packaged: 2015-08-31 13:45:38 UTC; iovleff
+Packaged: 2016-08-02 15:50:37 UTC; iovleff
 Author: Serge Iovleff [aut, cre]
 Maintainer: Serge Iovleff <Serge.Iovleff@stkpp.org>
 Repository: CRAN
-Date/Publication: 2015-08-31 19:46:50
+Date/Publication: 2016-08-03 01:53:06

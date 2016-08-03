@@ -1,4 +1,4 @@
-simulHeterogeneous <- function(n=100, nbCluster = 3, nbVariable=1, models="gaussian_pk_sjk", pmiss =0.1, z = NULL)
+simulMixedData <- function(n=100, nbCluster = 3, nbVariable=1, models="gaussian_pk_sjk", pmiss =0.1, z = NULL)
 {
   if (length(nbVariable) != length(models))
   { stop("nbVariable and models must have the same size")}

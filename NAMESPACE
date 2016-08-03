@@ -1,8 +1,10 @@
 export(clusterAlgo
+      ,learnAlgo
       ,clusterInit
       ,clusterStrategy
       ,clusterFastStrategy
       ,clusterSemiSEMStrategy
+      ,clusterSEMStrategy
       ,clusterDiagGaussianNames
       ,clusterGammaNames
       ,clusterCategoricalNames
@@ -17,14 +19,21 @@ export(clusterAlgo
       ,clusterGamma
       ,clusterCategorical
       ,clusterPoisson
-      ,clusterHeterogeneous
+      ,clusterMixedData
       ,clusterKernel
+      ,learnDiagGaussian
+      ,learnGamma
+      ,learnPoisson
+      ,learnCategorical
+      ,learnMixedData
+      ,learnKernel
       )
 
 exportClasses(ClusterAlgo
+             ,LearnAlgo
              ,ClusterInit
              ,ClusterStrategy
-             ,IClusterModelBase
+             ,IClusterModel
              ,IClusterComponent
              ,ClusterDiagGaussianComponent
              ,ClusterDiagGaussian
@@ -34,7 +43,7 @@ exportClasses(ClusterAlgo
              ,ClusterCategorical
              ,ClusterPoissonComponent
              ,ClusterPoisson
-             ,ClusterHeterogeneous
+             ,ClusterMixedData
              ,ClusterKernelComponent
              ,ClusterKernel
              )
@@ -45,11 +54,10 @@ exportMethods(show)
 exportMethods(summary)
 exportMethods(missingValues)
 
-import(rtkpp)
+import(rtkore)
 
-importFrom("methods", "show")
 importFrom("graphics", "close.screen", "hist", "lines", "par", "screen", "split.screen")
-importFrom("methods", "callNextMethod", "new", "validObject")
+importFrom("methods", "show", "callNextMethod", "new", "validObject")
 importFrom("stats", "cov.wt", "dgamma", "dnorm", "dpois")
 
 useDynLib(MixAll)
