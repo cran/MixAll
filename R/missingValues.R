@@ -26,17 +26,17 @@
 #' @rdname missingValues-methods
 #' @aliases missingValues,ClusterDiagGaussian-method
 setMethod(
-  "missingValues",
-  c("ClusterMixedData"),
+  f="missingValues",
+  signature=c("ClusterMixedDataModel"),
   function(x)
   {
-    nbData <- length(x@ldata)
+    nbData <- length(x@lcomponent)
     res <- vector("list", nbData)
     if(nbData>0)
     {
       for (l in 1:nbData)
       {
-        res[[l]]  <- cbind(x@ldata[[l]]@missing, (x@ldata[[l]]@data)[x@ldata[[l]]@missing]);
+        res[[l]]  <- cbind(x@lcomponent[[l]]@missing, (x@lcomponent[[l]]@data)[x@lcomponent[[l]]@missing]);
         colnames(res[[l]])[3] <- "value";
       }
     }
@@ -47,8 +47,8 @@ setMethod(
 #' @rdname missingValues-methods
 #' @aliases missingValues,ClusterDiagGaussianComponent-method
 setMethod(
-  "missingValues",
-  c("ClusterDiagGaussianComponent"),
+  f="missingValues",
+  signature=c("ClusterDiagGaussianComponent"),
   function(x)
   { res = cbind(x@missing, x@data[x@missing]);
     colnames(res)[3] <- "value";
@@ -60,16 +60,16 @@ setMethod(
 #' @rdname missingValues-methods
 #' @aliases missingValues,ClusterDiagGaussian-method
 setMethod(
-  "missingValues",
-  c("ClusterDiagGaussian"),
+  f="missingValues",
+  signature=c("ClusterDiagGaussian"),
   function(x) { return(missingValues(x@component));}
 )
 
 #' @rdname missingValues-methods
 #' @aliases missingValues,ClusterGammaComponent-method
 setMethod(
-    "missingValues",
-    c("ClusterGammaComponent"),
+    f="missingValues",
+    signature=c("ClusterGammaComponent"),
     function(x)
     { res = cbind(x@missing, x@data[x@missing]);
       colnames(res)[3] <- "value";
@@ -81,11 +81,10 @@ setMethod(
 #' @rdname missingValues-methods
 #' @aliases missingValues,ClusterGamma-method
 setMethod(
-  "missingValues",
-  c("ClusterGamma"),
+  f="missingValues",
+  signature=c("ClusterGamma"),
   function(x) { return(missingValues(x@component));}
 )
-
 
 #' @rdname missingValues-methods
 #' @aliases missingValues,ClusterCategoricalComponent-method
@@ -111,8 +110,8 @@ setMethod(
 #' @rdname missingValues-methods
 #' @aliases missingValues,ClusterPoissonComponent-method
 setMethod(
-  "missingValues",
-  c("ClusterPoissonComponent"),
+  f="missingValues",
+  signature=c("ClusterPoissonComponent"),
   function(x)
   { res = cbind(x@missing, x@data[x@missing]);
     colnames(res)[3] <- "value";
@@ -124,25 +123,60 @@ setMethod(
 #' @rdname missingValues-methods
 #' @aliases missingValues,ClusterPoisson-method
 setMethod(
-  "missingValues",
-  c("ClusterPoisson"),
+  f="missingValues",
+  signature=c("ClusterPoisson"),
   function(x) { return(missingValues(x@component));}
 )
 
 #' @rdname missingValues-methods
-#' @aliases missingValues,ClusterKernelComponent-method
+#' @aliases missingValues,ClusterPredict-method
 setMethod(
-    "missingValues",
-    c("ClusterKernelComponent"),
-    function(x)
-    {
-      return(NULL)
-    }
+  f="missingValues",
+  signature=c("ClusterPredict"),
+  function(x)
+  { res = cbind(x@missing, x@data[x@missing])
+    colnames(res)[3] <- "value"
+    nmiss <- nrow(x@missing)
+    if (nmiss > 0) { rownames(res) <- 1:nmiss}
+    return(res)
+  }
 )
+
 #' @rdname missingValues-methods
-#' @aliases missingValues,ClusterKernel-method
+#' @aliases missingValues,ClusterPredictMixedData-method
 setMethod(
-    "missingValues",
-    c("ClusterKernel"),
-    function(x) { return(NULL);}
+  f="missingValues",
+  signature=c("ClusterPredictMixedData"),
+  function(x)
+  {
+    nbData <- length(x@ldata)
+    res <- vector("list", nbData)
+    if(nbData>0)
+    {
+      for (l in 1:nbData)
+      {
+        res[[l]]  <- cbind(x@lmissing[[l]], (x@ldata[[l]])[x@lmissing[[l]]]);
+        colnames(res[[l]])[3] <- "value";
+      }
+    }
+    return(res)
+  }
 )
+
+#' @rdname missingValues-methods
+#' @aliases missingValues,KmmComponent-method
+setMethod(
+    f="missingValues",
+    signature=c("KmmComponent"),
+    function(x) { return(NULL)}
+)
+
+#' @rdname missingValues-methods
+#' @aliases missingValues,KmmModel-method
+setMethod(
+    f="missingValues",
+    signature=c("KmmModel"),
+    function(x) { return(NULL)}
+)
+
+

@@ -3,22 +3,25 @@
 \docType{methods}
 \name{missingValues}
 \alias{missingValues}
-\alias{missingValues,ClusterCategorical-method}
-\alias{missingValues,ClusterCategoricalComponent-method}
+\alias{missingValues,ClusterMixedDataModel-method}
 \alias{missingValues,ClusterDiagGaussian-method}
 \alias{missingValues,ClusterDiagGaussianComponent-method}
-\alias{missingValues,ClusterGamma-method}
+\alias{missingValues,ClusterDiagGaussian-method}
 \alias{missingValues,ClusterGammaComponent-method}
-\alias{missingValues,ClusterKernel-method}
-\alias{missingValues,ClusterKernelComponent-method}
-\alias{missingValues,ClusterMixedData-method}
-\alias{missingValues,ClusterPoisson-method}
+\alias{missingValues,ClusterGamma-method}
+\alias{missingValues,ClusterCategoricalComponent-method}
+\alias{missingValues,ClusterCategorical-method}
 \alias{missingValues,ClusterPoissonComponent-method}
+\alias{missingValues,ClusterPoisson-method}
+\alias{missingValues,ClusterPredict-method}
+\alias{missingValues,ClusterPredictMixedData-method}
+\alias{missingValues,KmmComponent-method}
+\alias{missingValues,KmmModel-method}
 \title{Return the missing values of a component or a cluster class.}
 \usage{
 missingValues(x)
 
-\S4method{missingValues}{ClusterMixedData}(x)
+\S4method{missingValues}{ClusterMixedDataModel}(x)
 
 \S4method{missingValues}{ClusterDiagGaussianComponent}(x)
 
@@ -36,9 +39,13 @@ missingValues(x)
 
 \S4method{missingValues}{ClusterPoisson}(x)
 
-\S4method{missingValues}{ClusterKernelComponent}(x)
+\S4method{missingValues}{ClusterPredict}(x)
 
-\S4method{missingValues}{ClusterKernel}(x)
+\S4method{missingValues}{ClusterPredictMixedData}(x)
+
+\S4method{missingValues}{KmmComponent}(x)
+
+\S4method{missingValues}{KmmModel}(x)
 }
 \arguments{
 \item{x}{an object that can return the imputed missing values}
@@ -61,5 +68,5 @@ x[indexes] <- NA;
 model <- clusterDiagGaussian(data=x, nbCluster=2:3, strategy = clusterFastStrategy())
 missingValues(model)
 }
-}
 
+}

@@ -54,7 +54,7 @@ namespace hidden
 template<typename Type>
 struct DataHandlerTraits< STK::RDataHandler, Type>
 {
-  typedef RMatrix<Type> Data;
+  typedef CArray<Type> Data;
 };
 
 } // namespace hidden
@@ -68,40 +68,17 @@ namespace STK
  *  The RDataHandler class allow to store various Rcpp::Matrix in a
  *  Rcpp::List with the corresponding InfoMap and InfoType.
  */
-class RDataHandler: public IDataHandler
+class RDataHandler: public DataHandlerBase<RDataHandler>
 {
   public:
-    typedef IDataHandler Base;
+    typedef DataHandlerBase<RDataHandler> Base;
     typedef Base::InfoMap InfoMap;
     typedef std::map<std::string, int> InfoType;
+
     /** default constructor */
-    inline RDataHandler(): Base(), nbSample_(0), nbVariable_(0) {}
-    /** constructor with a R-Matrix data set
-     *  @param data a R Matrix with elements of type type
-     *  @note cannot be passed as const& due to a bug from the Rcpop side (fixed
-     *  in the next release of Rcpp).
-     **/
-    template<int Rtype>
-    inline RDataHandler( Rcpp::Matrix<Rtype> const& data, std::string idData, std::string const& idModel )
-                       : Base()
-    {
-      data_.push_back(data, idData);
-      addInfo(idData, idModel);
-      addType(idData, Rtype);
-      nbSample_ = data.rows();
-      nbVariable_ = data.cols();
-    }
+    inline RDataHandler(): Base() {}
     /** destructor */
     inline ~RDataHandler() {}
-    /** @return the number of sample (the number of rows of the data) */
-    inline int nbSample() const { return nbSample_;}
-    /** @return the number of variables (the number of columns of the data) */
-    inline int nbVariable() const { return nbVariable_;}
-
-    /** @return the number of sample (the number of rows of the data) */
-    inline int nbSampleImpl() const { return nbSample_;}
-    /** @return the number of sample (the number of columns of the data) */
-    inline int nbVariableImpl() const { return nbVariable_;}
 
     /** Add a Matrix to the existing data sets
      *  @param idData Id of the data set
@@ -111,26 +88,38 @@ class RDataHandler: public IDataHandler
      *  in the next release of Rcpp).
      **/
     template<int Rtype>
-    inline void addData( Rcpp::Matrix<Rtype> const& data, std::string idData, std::string const& idModel )
+    void addData( Rcpp::Matrix<Rtype> const& data, std::string idData, std::string const& idModel )
     {
       if (addInfo(idData, idModel))
       {
         data_.push_back(data, idData);
         addType(idData, Rtype);
-        nbVariable_ += data.cols();
       }
     }
-    /** return in an RMatrix the (cloned) data with the given idData */
+    /** return in an CArray the copied data with the given idData */
     template<typename Type>
-    void getData(std::string const& idData, RMatrix<Type>& data, int& nbVariable) const
+    void getData(std::string const& idData, CArray<Type>& data, int& nbVariable) const
     {
       enum
       {
         Rtype_ = hidden::RcppTraits<Type>::Rtype_
       };
       Rcpp::Matrix<Rtype_> Rdata = data_[idData];
-      data.setMatrix(Rcpp::clone(Rdata));
+      RMatrix<Type> aux(Rdata);
+      data = aux;
       nbVariable = data.sizeCols();
+    }
+    /** return in an CArray the copied data with the given idData */
+    template<typename Type>
+    void getData(std::string const& idData, CArray<Type>& data) const
+    {
+      enum
+      {
+        Rtype_ = hidden::RcppTraits<Type>::Rtype_
+      };
+      Rcpp::Matrix<Rtype_> Rdata = data_[idData];
+      RMatrix<Type> aux(Rdata);
+      data = aux;
     }
 
   private:
@@ -149,10 +138,6 @@ class RDataHandler: public IDataHandler
      * - Rtype: an integer (defined in Rinternal.h) giving the type of the data
      **/
     InfoType infoType_;
-    /** Number of sample */
-    int nbSample_;
-    /** Number of variable */
-    int nbVariable_;
 };
 
 } // namespace STK

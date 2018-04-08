@@ -32,7 +32,7 @@
  *  @brief In this file we implement the run method of the MixtureCriterion classes.
  **/
 
-#include "../include/STK_MixtureCriterion.h"
+#include <Clustering/include/MixtureCriterion/STK_MixtureCriterion.h>
 
 namespace STK
 {
@@ -69,6 +69,18 @@ bool ICLMixtureCriterion::run()
   value_  = p_composer_->computeICL();
   return true;
 }
+
+/* implementation of the virtual method run */
+bool MLMixtureCriterion::run()
+{
+  if (!p_composer_)
+  { msg_error_ = STKERROR_NO_ARG(MLMixtureCriterion::run,p_composer_ is not set);
+    return false;
+  }
+  value_  = -2 * p_composer_->lnLikelihood();
+  return true;
+}
+
 
 } // namespace STK
 

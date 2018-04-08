@@ -22,7 +22,7 @@
 #    Contact : S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
 #
 #-----------------------------------------------------------------------
-#' @include ClusterModelNames.R IClusterModel.R
+#' @include global.R ClusterModelNames.R IClusterModel.R
 NULL
 
 #-----------------------------------------------------------------------
@@ -44,7 +44,7 @@ NULL
 #' the strategy to run. [\code{\link{clusterStrategy}}]() method by default.
 #' @param criterion character defining the criterion to select the best model.
 #' The best model is the one with the lowest criterion value.
-#' Possible values: "BIC", "AIC", "ICL". Default is "ICL".
+#' Possible values: "BIC", "AIC", "ICL", "ML". Default is "ICL".
 #' @param nbCore integer defining the number of processors to use (default is 1, 0 for all).
 #'
 #' @examples
@@ -76,11 +76,11 @@ NULL
 #'
 #' @return An instance of the [\code{\linkS4class{ClusterDiagGaussian}}] class.
 #' @author Serge Iovleff
-#' @export
+#'
 #'
 clusterDiagGaussian <- function( data, nbCluster=2
                                , models=clusterDiagGaussianNames()
-                               , strategy=clusterFastStrategy()
+                               , strategy=clusterStrategy()
                                , criterion="ICL"
                                , nbCore = 1)
 {
@@ -91,7 +91,7 @@ clusterDiagGaussian <- function( data, nbCluster=2
   if (nbClusterMin < 1) { stop("The number of clusters must be greater or equal to 1")}
 
   # check criterion
-  if(sum(criterion %in% c("BIC","AIC", "ICL")) != 1)
+  if(sum(criterion %in% c("BIC","AIC", "ICL", "ML")) != 1)
   { stop("criterion is not valid. See ?clusterDiagGaussian for the list of valid criterion")}
 
   # check data
@@ -111,8 +111,10 @@ clusterDiagGaussian <- function( data, nbCluster=2
   # Create model
   model = new("ClusterDiagGaussian", data)
   model@strategy = strategy;
+  model@criterionName = criterion
+
   # start estimation of the models
-  resFlag = .Call("clusterMixture", model, nbCluster, models, strategy, criterion, nbCore, PACKAGE="MixAll");
+  resFlag = .Call("clusterMixture", model, nbCluster, models, PACKAGE="MixAll");
   # set names
   if (resFlag != TRUE ) {cat("WARNING: An error occur during the clustering process");}
   colnames(model@component@mean)  <- colnames(model@component@data);
@@ -139,10 +141,9 @@ clusterDiagGaussian <- function( data, nbCluster=2
 #' @name ClusterDiagGaussianComponent
 #' @rdname ClusterDiagGaussianComponent-class
 #' @aliases ClusterDiagGaussianComponent-class
-#' @exportClass ClusterDiagGaussianComponent
 #'
 setClass(
-  Class="ClusterDiagGaussianComponent",
+  Class = "ClusterDiagGaussianComponent",
   representation( mean = "matrix", sigma = "matrix"),
   contains=c("IClusterComponent"),
   validity=function(object)
@@ -220,8 +221,15 @@ setMethod(
   f="print",
   function(x,k,...)
   {
-    cat("* Means     = ", format(x@mean[k,]), "\n")
-    cat("* S.D.      = ", format(x@sigma[k,]), "\n")
+    if(missing(k))
+    {
+      callNextMethod()
+    }
+    else
+    {
+      cat("* Means      = ", format(x@mean[k,]), "\n")
+      cat("* S.D.       = ", format(x@sigma[k,]), "\n")
+    }
   }
 )
 
@@ -232,8 +240,7 @@ setMethod(
   signature=c("ClusterDiagGaussianComponent"),
   function(object)
   {
-    cat("* Means     = ", format(object@mean), "\n")
-    cat("* S.D.      = ", format(object@sigma), "\n")
+    callNextMethod()
   }
 )
 
@@ -266,10 +273,9 @@ setMethod(
 #' @name ClusterDiagGaussian
 #' @rdname ClusterDiagGaussian-class
 #' @aliases ClusterDiagGaussian-class
-#' @exportClass ClusterDiagGaussian
 #'
 setClass(
-  Class="ClusterDiagGaussian",
+  Class = "ClusterDiagGaussian",
   representation( component = "ClusterDiagGaussianComponent"),
   contains=c("IClusterModel"),
   validity=function(object)
@@ -319,6 +325,7 @@ setMethod(
   signature=c("ClusterDiagGaussian"),
   function(x,...){
     cat("****************************************\n")
+    print(x@component)
     callNextMethod();
     cat("****************************************\n")
     for(k in 1:length(x@pk))
@@ -339,8 +346,8 @@ setMethod(
   function(object)
   {
     cat("****************************************\n")
+    show(object@component)
     callNextMethod();
-    show(object@component);
     cat("****************************************\n")
     for(k in 1:length(object@pk))
     {
@@ -360,10 +367,10 @@ setMethod(
   signature=c("ClusterDiagGaussian"),
   function(object, ...)
   {
-    cat("**************************************************************\n")
+    cat("****************************************\n")
+    summary(object@component)
     callNextMethod()
-    summary(object@component);
-    cat("**************************************************************\n")
+    cat("****************************************\n")
   }
 )
 
@@ -377,11 +384,10 @@ setMethod(
 #' If missing all the variables are represented.
 #' @param ... further arguments passed to or from other methods
 #'
-#' @importFrom graphics plot
 #' @aliases plot-ClusterDiagGaussian
 #' @docType methods
 #' @rdname plot-ClusterDiagGaussian-method
-#' @export
+#'
 #'
 #' @seealso \code{\link{plot}}
 #' @examples
@@ -408,67 +414,3 @@ setMethod(
 .dGauss <- function(x, j, k, model)
 { dnorm(x, (model@component@mean)[k, j] , (model@component@sigma)[k, j])}
 
-## #-----------------------------------------------------------------------
-## #' Definition of the [\code{\linkS4class{PredictDiagGaussian}}] class
-## #'
-## #' This class defines a predictor for diagonal Gaussian mixture Model.
-## #'
-## #' @slot model  A valid [\code{\linkS4class{ClusterDiagGaussian}}] class.
-## #' @slot data   A matrix with the data to predict.
-## #' @seealso [\code{\linkS4class{IClusterModel}}] class
-## #'
-## #' @examples
-## #' getSlots("PredictDiagGaussian")
-## #'
-## #' @author Serge Iovleff
-## #'
-## #' @name PredictDiagGaussian
-## #' @rdname PredictDiagGaussian-class
-## #' @aliases PredictDiagGaussian-class
-## #' @exportClass PredictDiagGaussian
-## #'
-## setClass(
-##     Class="PredictDiagGaussian",
-##     representation( model = "ClusterDiagGaussian", data = "matrix"),
-##     contains=c("IClusterPredict"),
-##     validity=function(object)
-##     {
-##       # check model
-##       if(class(object@model)[1] != "ClusterDiagGaussian")
-##       { stop("model must be an instance of ClusterDiagGaussian.")}
-##       if (!validObject(object@model)) {stop("model is not valid.")}
-##       # check data
-##       if (ncol(object@model@component@data)!= ncol(object@data))
-##       {stop("data must have the same number of column.")}
-##       return(TRUE)
-##     }
-## )
-## 
-## #' Initialize an instance of a MixAll S4 class.
-## #'
-## #' Initialization method of the [\code{\linkS4class{PredictDiagGaussian}}] class.
-## #' Used internally in the 'MixAll' package.
-## #'
-## #' @rdname initialize-methods
-## #' @keywords internal
-## setMethod(
-##     f="initialize",
-##     signature=c("PredictDiagGaussian"),
-##     definition=function(.Object, model, data)
-##     {
-##       # check model
-##       if(missing(model)) {stop("model is mandatory in PredictDiagGaussian.")}
-##       if(class(model)[1] != "ClusterDiagGaussian")
-##       { stop("model must be an instance of ClusterDiagGaussian.")}
-##       # for data
-##       if(missing(data)) {stop("data is mandatory in PredictDiagGaussian.")}
-##       # create slots
-##       .Object@model <- model
-##       .Object@data <- as.matrix(data, ncol= ncol(model@component@data))
-##       # validate
-##       .Object <- callNextMethod(.Object, nrow(.Object@data), .Object@model@nbCluster);
-##       validObject(.Object)
-##       return(.Object)
-##     }
-## )
-## 

@@ -7,10 +7,11 @@
 library(MixAll)
 MixAll.version <- packageDescription("MixAll")$Version
 MixAll.date <- packageDescription("MixAll")$Date
+set.seed(2)
 
 
 ###################################################
-### code chunk number 2: Learning-Mixtures.Rnw:215-224
+### code chunk number 2: Learning-Mixtures.Rnw:216-225
 ###################################################
 data(iris);
 x <- as.matrix(iris[,1:4]); z <- as.vector(iris[,5]); n <- nrow(x); p <- ncol(x);
@@ -24,7 +25,7 @@ plot(model)
 
 
 ###################################################
-### code chunk number 3: Learning-Mixtures.Rnw:235-247
+### code chunk number 3: Learning-Mixtures.Rnw:236-248
 ###################################################
 data(birds)
 ## add 10 missing values
@@ -41,7 +42,7 @@ plot(model)
 
 
 ###################################################
-### code chunk number 4: Learning-Mixtures.Rnw:257-269
+### code chunk number 4: Learning-Mixtures.Rnw:258-270
 ###################################################
 data(iris)
 x <- as.matrix(iris[,1:4]); z <- as.vector(iris[,5]); n <- nrow(x); p <- ncol(x);
@@ -58,7 +59,7 @@ plot(model)
 
 
 ###################################################
-### code chunk number 5: Learning-Mixtures.Rnw:279-291
+### code chunk number 5: Learning-Mixtures.Rnw:280-292
 ###################################################
 data(DebTrivedi)
 x <- DebTrivedi[, c(1, 6, 8, 15)]; z <- DebTrivedi$medicaid; n <- nrow(x); p <- ncol(x);
@@ -75,22 +76,7 @@ plot(model)
 
 
 ###################################################
-### code chunk number 6: Learning-Mixtures.Rnw:300-310
-###################################################
-data(bullsEye)
-x <- bullsEye[,1:2]; x = as.matrix(x); n <- nrow(x); p <- ncol(x);
-z <- bullsEye[,3];
-model <- learnKernel( data=x, labels=z
-                    , models = clusterKernelNames(prop = "equal")
-                    , dim = 50, kernelName = "gaussian", kernelParameters = 1.
-                    , algo="impute", nbIter = 1, epsilon =  1e-08
-                    )
-summary(model)
-plot(model)
-
-
-###################################################
-### code chunk number 7: Learning-Mixtures.Rnw:323-333
+### code chunk number 6: Learning-Mixtures.Rnw:324-334
 ###################################################
 data(HeartDisease.cat)
 data(HeartDisease.cont)

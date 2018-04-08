@@ -52,30 +52,24 @@ class LearnLauncher: public ILauncher
      * @param model a reference on the current model
      * @param algo the algorithm defined in R
      **/
-    LearnLauncher( SEXP model, SEXP models, SEXP algo, SEXP critName );
+    LearnLauncher( Rcpp::S4 model, Rcpp::CharacterVector models, Rcpp::S4 algo );
     /** constructor with a list of component.
      *  @param model a reference on the current model
      *  @param algo the algorithm defined in R
      **/
-    LearnLauncher( SEXP model, SEXP algo, SEXP critName );
+    LearnLauncher( Rcpp::S4 model, Rcpp::S4 algo );
     /** destructor. */
     virtual ~LearnLauncher();
     /** run the estimation */
     bool run();
-    /** @return the model */
-    inline Rcpp::S4 const& s4_model() const { return s4_model_;}
 
   protected:
     /** strategy from the R side */
-    Rcpp::S4              s4_model_;
-    /** strategy from the R side */
-    Rcpp::S4              s4_algo_;
-    /** vector with the model names to try */
-    Rcpp::CharacterVector v_models_;
+    Rcpp::S4    s4_algo_;
     /** character string with the model selection criterion name */
-    std::string           criterion_;
+    std::string criterion_;
     /** learning algorithm to run */
-    IMixtureLearnAlgo* p_algo_;
+    IMixtureAlgoLearn* p_algo_;
     /** criterion to run */
     IMixtureCriterion* p_criterion_;
 
@@ -88,14 +82,11 @@ class LearnLauncher: public ILauncher
      *  @return the value of the best criteria.
      **/
     Real selectBestMixedModel();
-    /** create the kernel mixtures in the given learner. We have to
-     * use a workaround for this kind of model as they need an extra parameter
-     * (the dimension) to be given
-     **/
-    void updateMixtures(MixtureLearner* p_learner);
 
     /** pointer on the main learner */
     IMixtureLearner* p_learner_;
+    /** Is the model with mixed data ? */
+    bool isMixedData_;
 };
 
 } // namespace STK

@@ -81,19 +81,6 @@ class IMixtureLearner: public IMixtureStatModel //, public IMixture
     virtual void paramUpdateStep() = 0;
 
     // not virtual
-    /** set the mixture parameters using the posterior probabilities.
-     *  Proportions, numbers in each class and class labels are computed
-     *  using these probabilities.
-     **/
-    template<class Array>
-    void setMixtureParameters( Array const& tik);
-    /** set the mixture parameters giving the posterior probabilities and
-     *  the proportions.
-     *  Numbers in each class and class labels are computed using the
-     *  posterior probabilities.
-     **/
-    template<class Array, class RowVector>
-    void setMixtureParameters( Array const& tik, RowVector const& pk);
     /** set the mixture parameters using the given class labels.
      *  Posterior probabilities, numbers in each class and proportions are
      *  computed using the class labels.
@@ -111,46 +98,6 @@ class IMixtureLearner: public IMixtureStatModel //, public IMixture
     Clust::modelState state_;
 };
 
-/* set the mixture parameters using the posterior probabilities.
- **/
-template<class Array>
-void IMixtureLearner::setMixtureParameters(Array const& tik)
-{
-  setNbSample(tik_.sizeRows());
-  setNbCluster(tik_.sizeCols());
-  tik_ = tik;
-  nk_ = Stat::sumByCol(tik_);
-  pk_ = nk_ / nbSample();
-  for (int i = tik_.beginCols(); i< tik_.endCols(); ++i)
-  {
-    int k;
-    tik_.row(i).maxElt(k);
-    zi_[i] = k;
-  }
-}
-
-/* set the mixture parameters using the posterior probabilities.
- **/
-template<class Array, class RowVector>
-void IMixtureLearner::setMixtureParameters(Array const& tik, RowVector const& pk)
-{
-#ifdef STK_MIXTURE_DEBUG
-  if (pk_.size() != tik_.sizeCols())
-  { STKRUNTIME_ERROR_2ARG(IMixtureLearner::setMixtureParameters,pk_.size(),tik_.sizeCols(),Numbers of class in tik and pk differ);}
-#endif
-  setNbSample(tik_.sizeRows());
-  setNbCluster(tik_.sizeCols());
-  tik_ = tik;
-  pk_  = pk;
-  nk_  = Stat::sumByCol(tik_);
-  for (int i = tik_.beginCols(); i< tik_.endCols(); ++i)
-  {
-    int k;
-    tik_.row(i).maxElt(k);
-    zi_[i] = k;
-  }
-}
-
 /* set the mixture parameters using the given class labels.
  *  Posterior probabilities, numbers in each class  are computed using these
  *  class labels.
@@ -163,8 +110,8 @@ void IMixtureLearner::setClassLabels( ColVector const& zi)
   for (int i=tik_.beginRows(); i < tik_.endRows(); i++)
   { tik_(i, zi_[i]) = 1.;}
   // count the number of individuals in each class
-  nk_ = Stat::sumByCol(tik_);
-  pk_ = nk_/nbSample();
+  tk_ = Stat::sumByCol(tik_);
+  pk_ = tk_/nbSample();
 }
 
 
@@ -180,7 +127,7 @@ void IMixtureLearner::setClassLabels( ColVector const& zi, RowVector const& pk)
   for (int i=tik_.beginRows(); i < tik_.endRows(); i++)
   { tik_(i, zi_[i]) = 1.;}
   // count the number of individuals in each class
-  nk_ = Stat::sumByCol(tik_);
+  tk_ = Stat::sumByCol(tik_);
 }
 
 } // namespace STK

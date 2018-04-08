@@ -7,42 +7,43 @@
 library(MixAll)
 MixAll.version <- packageDescription("MixAll")$Version
 MixAll.date <- packageDescription("MixAll")$Date
+set.seed(2)
 
 
 ###################################################
-### code chunk number 2: Introduction-Mixtures.Rnw:353-355
+### code chunk number 2: Introduction-Mixtures.Rnw:356-358
 ###################################################
 clusterAlgo()
 clusterAlgo(algo="SemiSEM",nbIteration=100,epsilon=1e-08)
 
 
 ###################################################
-### code chunk number 3: Introduction-Mixtures.Rnw:385-387
+### code chunk number 3: Introduction-Mixtures.Rnw:388-390
 ###################################################
 clusterInit()
 clusterInit(method="random", nbInit= 2, algo="CEM", nbIteration=10,epsilon=1e-04)
 
 
 ###################################################
-### code chunk number 4: Introduction-Mixtures.Rnw:466-467
+### code chunk number 4: Introduction-Mixtures.Rnw:468-469
 ###################################################
 clusterStrategy()
 
 
 ###################################################
-### code chunk number 5: Introduction-Mixtures.Rnw:483-484
+### code chunk number 5: Introduction-Mixtures.Rnw:485-486
 ###################################################
 clusterFastStrategy()
 
 
 ###################################################
-### code chunk number 6: Introduction-Mixtures.Rnw:491-492
+### code chunk number 6: Introduction-Mixtures.Rnw:493-494
 ###################################################
 clusterSemiSEMStrategy()
 
 
 ###################################################
-### code chunk number 7: Introduction-Mixtures.Rnw:545-548
+### code chunk number 7: Introduction-Mixtures.Rnw:548-551
 ###################################################
 clusterDiagGaussianNames()
 clusterDiagGaussianNames("all", "equal", "free")
@@ -50,7 +51,7 @@ clusterValidDiagGaussianNames(c("gaussian_pk_sjk","gaussian_p_ljk"))
 
 
 ###################################################
-### code chunk number 8: Introduction-Mixtures.Rnw:575-578
+### code chunk number 8: Introduction-Mixtures.Rnw:578-581
 ###################################################
 clusterCategoricalNames()
 clusterCategoricalNames("all", "equal")
@@ -58,7 +59,7 @@ clusterValidCategoricalNames(c("categorical_pk_pjk","categorical_p_pk"))
 
 
 ###################################################
-### code chunk number 9: Introduction-Mixtures.Rnw:615-618
+### code chunk number 9: Introduction-Mixtures.Rnw:618-621
 ###################################################
 clusterPoissonNames()
 clusterPoissonNames("all","proportional")
@@ -66,7 +67,7 @@ clusterValidPoissonNames(c("poisson_pk_ljk","poisson_p_ljlk"))
 
 
 ###################################################
-### code chunk number 10: Introduction-Mixtures.Rnw:691-694
+### code chunk number 10: Introduction-Mixtures.Rnw:694-697
 ###################################################
 clusterGammaNames()
 clusterGammaNames("all", "equal","free","free","all")
@@ -74,14 +75,7 @@ clusterValidGammaNames(c("gamma_pk_aj_bk","gamma_p_ajk_bjk"))
 
 
 ###################################################
-### code chunk number 11: Introduction-Mixtures.Rnw:753-755
-###################################################
-clusterKernelNames()
-clusterValidKernelNames(c("kernelGaussian_pk_sk","kernelGaussian_pk_s"))
-
-
-###################################################
-### code chunk number 12: Introduction-Mixtures.Rnw:863-872
+### code chunk number 11: Introduction-Mixtures.Rnw:785-794
 ###################################################
 data(geyser);
 x = as.matrix(geyser); n <- nrow(x); p <- ncol(x);
@@ -95,7 +89,7 @@ plot(model)
 
 
 ###################################################
-### code chunk number 13: Introduction-Mixtures.Rnw:906-914
+### code chunk number 12: Introduction-Mixtures.Rnw:828-836
 ###################################################
 data(birds)
 x = as.matrix(birds);  n <- nrow(x); p <- ncol(x);
@@ -108,7 +102,7 @@ plot(model)
 
 
 ###################################################
-### code chunk number 14: Introduction-Mixtures.Rnw:946-954
+### code chunk number 13: Introduction-Mixtures.Rnw:868-876
 ###################################################
 data(geyser);
 x = as.matrix(geyser); n <- nrow(x); p <- ncol(x);
@@ -121,7 +115,7 @@ plot(model)
 
 
 ###################################################
-### code chunk number 15: Introduction-Mixtures.Rnw:985-991
+### code chunk number 14: Introduction-Mixtures.Rnw:907-913
 ###################################################
 data(DebTrivedi)
 dt <- DebTrivedi[1:500, c(1, 6,8, 15)]
@@ -132,16 +126,7 @@ plot(model)
 
 
 ###################################################
-### code chunk number 16: Introduction-Mixtures.Rnw:1028-1032
-###################################################
-data(bullsEye)
-model <- clusterKernel( data=bullsEye[,1:2], nbCluster=2, models = "kernelGaussian_pk_s", strategy = clusterFastStrategy())
-summary(model)
-plot(model)
-
-
-###################################################
-### code chunk number 17: Introduction-Mixtures.Rnw:1061-1069
+### code chunk number 15: Introduction-Mixtures.Rnw:944-952
 ###################################################
 data(HeartDisease.cat)
 data(HeartDisease.cont)
@@ -151,5 +136,26 @@ model <- clusterMixedData(ldata, lnames, nbCluster=3, strategy = clusterFastStra
 summary(model)
 missingValues(model)
 plot(model)
+
+
+###################################################
+### code chunk number 16: Introduction-Mixtures.Rnw:988-990
+###################################################
+clusterAlgoPredict()
+clusterAlgo(algo="SemiSEM",nbIteration=100)
+
+
+###################################################
+### code chunk number 17: Introduction-Mixtures.Rnw:1010-1019
+###################################################
+data(iris)
+x = as.matrix(iris[1:4])
+indexes <- sample(1:nrow(x), nrow(x)/2)
+train <- x[ indexes,]
+test  <- x[-indexes,]
+model1 <- clusterDiagGaussian( data =train, nbCluster=2:3, models=c( "gaussian_p_sjk"))
+## compute prediction for test and compare
+model2 <- clusterPredict(test, model1)
+table(model2@zi, as.integer(iris$Species[-indexes]))
 
 

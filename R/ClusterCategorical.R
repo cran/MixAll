@@ -43,16 +43,16 @@ NULL
 #' the strategy to run. [\code{\link{clusterStrategy}}]() method by default.
 #' @param criterion character defining the criterion to select the best model.
 #' The best model is the one with the lowest criterion value.
-#' Possible values: "BIC", "AIC", "ICL". Default is "ICL".
+#' Possible values: "BIC", "AIC", "ICL", "ML". Default is "ICL".
 #' @param nbCore integer defining the number of processors to use (default is 1, 0 for all).
 #'
 #' @examples
 #' ## A quantitative example with the birds data set
 #' data(birds)
 #' ## add 10 missing values
-#' x = as.matrix(birds); n <- nrow(x); p <- ncol(x);
-#' indexes <- matrix(c(round(runif(5,1,n)), round(runif(5,1,p))), ncol=2);
-#' x[indexes] <- NA;
+#' x = as.matrix(birds); n <- nrow(x); p <- ncol(x)
+#' indexes <- matrix(c(round(runif(5,1,n)), round(runif(5,1,p))), ncol=2)
+#' x[indexes] <- NA
 #' ## estimate model (using fast strategy, results may be misleading)
 #' model <- clusterCategorical( data=x, nbCluster=2:3
 #'                            , models=c( "categorical_pk_pjk", "categorical_p_pjk")
@@ -75,11 +75,11 @@ NULL
 #'
 #' @return An instance of the [\code{\linkS4class{ClusterCategorical}}] class.
 #' @author Serge Iovleff
-#' @export
+#'
 #'
 clusterCategorical <- function( data, nbCluster=2
-                              , models=c( "categorical_pk_pjk")
-                              , strategy=clusterFastStrategy()
+                              , models=clusterCategoricalNames(probabilities="free")
+                              , strategy=clusterStrategy()
                               , criterion="ICL"
                               , nbCore = 1)
 {
@@ -90,7 +90,7 @@ clusterCategorical <- function( data, nbCluster=2
   if (nbClusterMin < 2) { stop("The number of clusters must be greater or equal to 2\n")}
 
   # check criterion
-  if(sum(criterion %in% c("BIC","AIC", "ICL")) != 1)
+  if(sum(criterion %in% c("BIC","AIC", "ICL", "ML")) != 1)
   { stop("criterion is not valid. See ?clusterCategorical for the list of valid criterion\n")}
 
   # get data
@@ -109,10 +109,11 @@ clusterCategorical <- function( data, nbCluster=2
 
   # Create model
   model = new("ClusterCategorical", data)
-  model@strategy = strategy;
-
+  model@strategy = strategy
+  model@criterionName = criterion
+  
   # start estimation of the models
-  resFlag = .Call("clusterMixture", model, nbCluster, models, strategy, criterion, nbCore, PACKAGE="MixAll")
+  resFlag = .Call("clusterMixture", model, nbCluster, models, nbCore, PACKAGE="MixAll")
   # set names
   # dimnames(model@plkj) <- list(NULL, colnames(model@component@data), NULL) # not working
   # should be done on the C++ side
@@ -141,10 +142,9 @@ clusterCategorical <- function( data, nbCluster=2
 #' @name ClusterCategoricalComponent
 #' @rdname ClusterCategoricalComponent-class
 #' @aliases ClusterCategoricalComponent-class
-#' @exportClass ClusterCategoricalComponent
 #'
 setClass(
-  Class="ClusterCategoricalComponent",
+  Class = "ClusterCategoricalComponent",
   representation( plkj = "array", nbModalities = "numeric", levels = "list"),
   contains=c("IClusterComponent"),
   validity=function(object)
@@ -232,8 +232,21 @@ setMethod(
     signature=c("ClusterCategoricalComponent"),
     function(x,k,...)
     {
-      cat("* probabilities = \n");
-      print(format(x@plkj[,k,]), quote=FALSE);
+      if(missing(k))
+      {
+        callNextMethod()
+        cat("****************************************\n")
+        cat("* nbModalities   = ", format(x@nbModalities), "\n")
+        cat("****************************************\n")
+        cat("* levels = \n");
+        print(format(x@levels));
+        cat("****************************************\n")
+      }
+      else
+      { 
+        cat("* probabilities = \n");
+        print(format(x@plkj[,k,]), quote=FALSE);
+      }
     }
 )
 
@@ -244,8 +257,13 @@ setMethod(
     signature=c("ClusterCategoricalComponent"),
     function(object)
     {
-      cat("* probabilities = \n");
-      print(format(object@plkj), quote=FALSE);
+      callNextMethod()
+      cat("****************************************\n")
+      cat("* nbModalities   = ", format(object@nbModalities), "\n")
+      cat("****************************************\n")
+      cat("* levels = \n");
+      print(format(object@levels));
+      cat("****************************************\n")
     }
 )
 
@@ -256,8 +274,13 @@ setMethod(
     signature=c("ClusterCategoricalComponent"),
     function(object)
     {
-      cat("* levels of the variables = \n");
+      callNextMethod()
+      cat("****************************************\n")
+      cat("* nbModalities   = ", format(object@nbModalities), "\n")
+      cat("****************************************\n")
+      cat("* levels = \n");
       print(format(object@levels));
+      cat("****************************************\n")
     }
 )
 
@@ -289,9 +312,9 @@ setMethod(
 #' @name ClusterCategorical-class
 #' @rdname ClusterCategorical-class
 #' @aliases ClusterCategorical-class
-#' @exportClass ClusterCategorical
+#' 
 setClass(
-  Class="ClusterCategorical",
+  Class = "ClusterCategorical",
   representation( component = "ClusterCategoricalComponent"),
   contains=c("IClusterModel"),
   validity=function(object)
@@ -343,16 +366,14 @@ setMethod(
   function(x,...)
   {
     cat("****************************************\n")
+    print(x@component)
     callNextMethod();
     cat("****************************************\n")
-    cat("* levels = \n");
-    cat("****************************************\n")
-    print(format(x@component@levels));
     for(k in 1:length(x@pk))
     {
       cat("*** Cluster: ",k,"\n")
-      cat("* Proportion = ", format(x@pk[k]), "\n");
-      print(x@component,k);
+      cat("* Proportion = ", format(x@pk[k]), "\n")
+      print(x@component,k)
       cat("* probabilities = \n"); print(format(x@component@plkj[,k,]), quote=FALSE)
       cat("****************************************\n")
     }
@@ -367,10 +388,9 @@ setMethod(
   function(object)
   {
     cat("****************************************\n")
+#    cat("* model name     =",object@component@modelName,"\n")
+    show(object@component)
     callNextMethod();
-    cat("****************************************\n")
-    cat("* levels of the variables = \n");
-    cat("****************************************\n")
     for(k in 1:length(object@pk))
     {
       cat("*** Cluster: ",k,"\n")
@@ -388,80 +408,13 @@ setMethod(
   signature=c("ClusterCategorical"),
   function(object, ...)
   {
-    cat("**************************************************************\n")
+    cat("****************************************\n")
+    summary(object@component)
     callNextMethod()
-    cat("**************************************************************\n")
-    summary(object@component);
-    cat("* nbModalities   = ", format(object@component@nbModalities), "\n")
-    cat("**************************************************************\n")
+    cat("****************************************\n")
   }
 )
 
-## #-----------------------------------------------------------------------
-## #' Definition of the [\code{\linkS4class{PredictCategorical}}] class
-## #'
-## #' This class defines a predictor for Categorical mixture Model.
-## #'
-## #' @slot model  A valid [\code{\linkS4class{ClusterCategorical}}] class.
-## #' @slot data   A matrix with the data to predict.
-## #' @seealso [\code{\linkS4class{IClusterModel}}] class
-## #'
-## #' @examples
-## #' getSlots("PredictCategorical")
-## #'
-## #' @author Serge Iovleff
-## #'
-## #' @name PredictCategorical
-## #' @rdname PredictCategorical-class
-## #' @aliases PredictCategorical-class
-## #' @exportClass PredictCategorical
-## #'
-## setClass(
-##     Class="PredictCategorical",
-##     representation( model = "ClusterCategorical", data = "matrix"),
-##     contains=c("IClusterPredict"),
-##     validity=function(object)
-##     {
-##       # check model
-##       if(class(object@model)[1] != "ClusterCategorical")
-##       { stop("model must be an instance of ClusterCategorical.")}
-##       if (!validObject(object@model)) {stop("model is not valid.")}
-##       # check data
-##       if (ncol(object@model@component@data)!= ncol(object@data))
-##       {stop("data must have the same number of column.")}
-##       return(TRUE)
-##     }
-## )
-## 
-## #' Initialize an instance of a MixAll S4 class.
-## #'
-## #' Initialization method of the [\code{\linkS4class{PredictCategorical}}] class.
-## #' Used internally in the 'MixAll' package.
-## #'
-## #' @rdname initialize-methods
-## #' @keywords internal
-## setMethod(
-##     f="initialize",
-##     signature=c("PredictCategorical"),
-##     definition=function(.Object, model, data)
-##     {
-##       # check model
-##       if(missing(model)) {stop("model is mandatory in PredictCategorical.")}
-##       if(class(model)[1] != "ClusterDiagGaussian")
-##       { stop("model must be an instance of ClusterDiagGaussian.")}
-##       # for data
-##       if(missing(data)) {stop("data is mandatory in PredictCategorical.")}
-##       # create slots
-##       .Object@model <- model
-##       .Object@data <- as.matrix(data, ncol= ncol(model@component@data))
-##       # validate
-##       .Object <- callNextMethod(.Object, nrow(.Object@data), .Object@model@nbCluster);
-##       validObject(.Object)
-##       return(.Object)
-##     }
-## )
-## 
-## 
 #' Plotting of a class [\code{\linkS4class{ClusterCategorical}}]
 #'
 #' Plotting data from a [\code{\linkS4class{ClusterCategorical}}] object
@@ -471,11 +424,10 @@ setMethod(
 #' @param y a number between 1 and K-1.
 #' @param ... further arguments passed to or from other methods
 #'
-#' @importFrom graphics plot
 #' @aliases plot-ClusterCategorical
 #' @docType methods
 #' @rdname plot-ClusterCategorical-method
-#' @export
+#'
 #'
 #' @seealso \code{\link{plot}}
 #' @examples
@@ -509,7 +461,7 @@ setMethod(
        mean  <- matrix(0, nrow = nbCluster, ncol =ndim)
        sigma <- matrix(1, nrow = nbCluster, ncol =ndim)
        for (k in 1:nbCluster)
-       {
+       { 
          wcov = cov.wt(as.matrix(Y), x@tik[,k], method = "ML");
          mean[k,]  = wcov$center;
          sigma[k,] = sqrt(diag(wcov$cov))

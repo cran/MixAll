@@ -46,7 +46,7 @@ IMixtureStatModel::IMixtureStatModel( int nbSample, int nbCluster)
                                     : IStatModelBase(nbSample)
                                     , nbCluster_(nbCluster)
                                     , pk_(nbCluster, 1./nbCluster), tik_(nbSample, nbCluster, 1./nbCluster)
-                                    , nk_(nbCluster, nbSample/nbCluster), zi_(nbSample, baseIdx)
+                                    , tk_(nbCluster, nbSample/nbCluster), zi_(nbSample, baseIdx)
                                     , v_mixtures_()
 {}
 
@@ -55,7 +55,7 @@ IMixtureStatModel::IMixtureStatModel( IMixtureStatModel const& model)
                                    : IStatModelBase(model)
                                    , nbCluster_(model.nbCluster_)
                                    , pk_(model.pk_), tik_(model.tik_)
-                                   , nk_(model.nk_), zi_(model.zi_)
+                                   , tk_(model.tk_), zi_(model.zi_)
                                    , v_mixtures_(model.v_mixtures_)
 {
   // clone mixtures
@@ -154,6 +154,7 @@ void IMixtureStatModel::releaseMixture( String const& idData)
     }
   }
 }
+
 // implement computeNbFreeParameters
 int IMixtureStatModel::computeNbFreeParameters() const
 {
@@ -162,6 +163,19 @@ int IMixtureStatModel::computeNbFreeParameters() const
   { sum+= (*it)->nbFreeParameter();}
   return sum;
 }
+
+/** @brief compute the missing values of the model.
+ *  lookup on the mixtures and sum the nbMissingValues.
+ *  @return the number of missing values
+ **/
+int IMixtureStatModel::computeNbMissingValues() const
+{
+  int sum = nbCluster_-1; // proportions
+  for (ConstMixtIterator it = v_mixtures_.begin(); it != v_mixtures_.end(); ++it)
+  { sum+= (*it)->nbMissingValues();}
+  return sum;
+}
+
 
 /* @brief compute the number of variables of the model.
  *  lookup on the mixtures and sum the nbFreeParameter.
@@ -183,6 +197,9 @@ int IMixtureStatModel::computeNbVariables() const
  **/
 void IMixtureStatModel::initializeStep()
 {
+#ifdef STK_MIXTURE_VERBOSE
+  stk_cout << _T("Entering IMixtureStatModel::initializeStep\n");
+#endif
   if (v_mixtures_.size() == 0)
     STKRUNTIME_ERROR_NO_ARG(IMixtureStatModel::initializeStep,no mixture registered);
   setLnLikelihood(-Arithmetic<Real>::infinity());

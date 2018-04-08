@@ -44,60 +44,53 @@ namespace STK
  * The ILauncher allow to create the strategy for estimating a mixture model
  * with less effort
  **/
-ILauncher::ILauncher( SEXP model, SEXP models)
-                            : IRunnerBase()
-                            , s4_model_(model)
-                            , v_models_(models)
-                            , handler_()
-                            , diagGaussianManager_(handler_)
-                            , poissonManager_(handler_)
-                            , gammaManager_(handler_)
-                            , categoricalManager_(handler_)
-                            , kernelManager_(handler_)
-                            , isMixedData_(false)
+ILauncher::ILauncher( Rcpp::S4 model, Rcpp::CharacterVector models)
+                    : ILauncherBase(model)
+                    , v_models_(models)
+                    , handler_()
+                    , diagGaussianManager_(handler_)
+                    , poissonManager_(handler_)
+                    , gammaManager_(handler_)
+                    , categoricalManager_(handler_)
+                    , kernelManager_(kerHandler_)
 {}
 /* facade design pattern.
  * The ILauncher allow to create the strategy for estimating a mixture model
  * with less effort
  **/
-ILauncher::ILauncher( SEXP model)
-                            : IRunnerBase()
-                            , s4_model_(model)
-                            , v_models_()
-                            , handler_()
-                            , diagGaussianManager_(handler_)
-                            , poissonManager_(handler_)
-                            , gammaManager_(handler_)
-                            , categoricalManager_(handler_)
-                            , kernelManager_(handler_)
-                            , isMixedData_(true)
+ILauncher::ILauncher( Rcpp::S4 model)
+                    : ILauncherBase(model)
+                    , v_models_()
+                    , handler_()
+                    , diagGaussianManager_(handler_)
+                    , poissonManager_(handler_)
+                    , gammaManager_(handler_)
+                    , categoricalManager_(handler_)
+                    , kernelManager_(kerHandler_)
 {}
+
 /* destructor. */
 ILauncher::~ILauncher()
-{
-}
+{}
 
 
 /* create the managers for models with real data */
 void ILauncher::createContinuousDataSets( std::string const& idData
-                                              , std::string const& idModel
-                                              , Rcpp::S4 s4_component
-                                              , Clust::Mixture model
-                                              )
+                                        , Rcpp::S4 s4_component
+                                        , Clust::Mixture model
+                                        )
 {
   NumericMatrix m_data = s4_component.slot("data");
-  RMatrix<double> data(m_data);
   handler_.addData(m_data, idData, Clust::mixtureToString(model));
 }
+
 /* create the managers for models with real data */
 void ILauncher::createDiscreteDataSets( std::string const& idData
-                                          , std::string const& idModel
-                                          , Rcpp::S4 s4_component
-                                          , Clust::Mixture model
-                                          )
+                                      , Rcpp::S4 s4_component
+                                      , Clust::Mixture model
+                                      )
 {
   IntegerMatrix m_data = s4_component.slot("data");
-  RMatrix<int> data(m_data);
   handler_.addData(m_data, idData, Clust::mixtureToString(model));
 }
 
@@ -108,118 +101,35 @@ void ILauncher::createMixtures(IMixtureStatModel* p_model)
   p_model->createMixture(poissonManager_);
   p_model->createMixture(gammaManager_);
   p_model->createMixture(categoricalManager_);
-  p_model->createMixture(kernelManager_);
 }
 
 /* fill the s4_component with the parameters */
-void ILauncher::getParameters(IMixtureStatModel* p_model, std::string const& idData, Rcpp::S4& s4_component)
+void ILauncher::getParameters(IMixtureStatModel* p_model, std::string const& idData, Rcpp::S4 s4_component)
 {
   std::string rModelName = s4_component.slot("modelName");
   bool freeProp;
   switch (Clust::mixtureToMixtureClass(Clust::stringToMixture(rModelName, freeProp)))
   {
-    case Clust::Gaussian_:
-      getDiagGaussianParameters(p_model, idData, s4_component);
+    case Clust::DiagGaussian_:
+      setDiagGaussianParametersToComponent(p_model, diagGaussianManager_, idData, s4_component);
       break;
     case Clust::Poisson_:
-      getPoissonParameters(p_model, idData, s4_component);
+      setPoissonParametersToComponent(p_model, poissonManager_, idData, s4_component);
       break;
     case Clust::Gamma_:
-      getGammaParameters(p_model, idData, s4_component);
+      setGammaParametersToComponent(p_model, gammaManager_, idData, s4_component);
       break;
     case Clust::Categorical_:
-      getCategoricalParameters(p_model, idData, s4_component);
+      setCategoricalParametersToComponent(p_model, categoricalManager_, idData, s4_component);
       break;
-    case Clust::Kernel_:
-      getKernelParameters(p_model, idData, s4_component);
+    case Clust::Kmm_:
+      setKernelParametersToComponent(p_model, kernelManager_, idData, s4_component);
       break;
     case Clust::unknown_mixture_class_:
-
+      break;
     default:
       break;
   }
-}
-
-/* get the diagonal Gaussian parameters */
-void ILauncher::getDiagGaussianParameters(IMixtureStatModel* p_model, std::string const& idData, Rcpp::S4& s4_component)
-{
-  // get parameters
-  ArrayXX params;
-  p_model->getParameters(diagGaussianManager_,idData, params);
-  // get dimensions
-  int K = params.sizeRows()/2, nbVariable = params.sizeCols();
-  // get results
-  ArrayXX mean(K, nbVariable), sigma(K, nbVariable);
-  for (int k=0; k<K; ++k)
-  {
-    mean.row(k)  = params.row(2*k);
-    sigma.row(k) = params.row(2*k+1);
-  }
-  // save results in s4_model
-  s4_component.slot("mean")  = Rcpp::wrap(mean);
-  s4_component.slot("sigma") = Rcpp::wrap(sigma);
-  // get data
-  s4_component.slot("data") = diagGaussianManager_.getData<double>(idData).matrix();
-}
-
-/* get the kernel parameters */
-void ILauncher::getKernelParameters(IMixtureStatModel* p_model, std::string const& idData, Rcpp::S4& s4_component)
-{
-  // get parameters
-  ArrayXX param;
-  p_model->getParameters(kernelManager_,idData, param);
-  // save results in s4_model
-  s4_component.slot("sigma") = Rcpp::wrap(param.col(0));
-  s4_component.slot("dim")   = Rcpp::wrap(param.col(1));
-  // get data -- not necessary for kernels--
-  //s4_component.slot("data") = kernelManager_.getData<double>(idData).matrix();
-}
-
-/* get the diagonal Gaussian parameters */
-void ILauncher::getPoissonParameters(IMixtureStatModel* p_model, std::string const& idData, Rcpp::S4& s4_component)
-{
-  // get parameters
-  ArrayXX params;
-  p_model->getParameters(poissonManager_,idData, params);
-  // save results in s4_model
-  s4_component.slot("lambda")  = Rcpp::wrap(params);
-  // get data
-  s4_component.slot("data") = poissonManager_.getData<double>(idData).matrix();
-}
-
-/* get the gamma parameters */
-void ILauncher::getGammaParameters(IMixtureStatModel* p_model, std::string const& idData, Rcpp::S4& s4_component)
-{
-  // get parameters
-  ArrayXX params;
-  p_model->getParameters(gammaManager_,idData, params);
-  // get dimensions
-  int K = params.sizeRows()/2, nbVariable = params.sizeCols();
-  // get results
-  ArrayXX shape(K, nbVariable), scale(K, nbVariable);
-  for (int k=0; k<K; ++k)
-  {
-    shape.row(k) = params.row(2*k);
-    scale.row(k) = params.row(2*k+1);
-  }
-  // save results in s4_model
-  s4_component.slot("shape") = Rcpp::wrap(shape);
-  s4_component.slot("scale") = Rcpp::wrap(scale);
-  // get data
-  s4_component.slot("data") = gammaManager_.getData<double>(idData).matrix();
-}
-
-/* get the diagonal Categorical parameters */
-void ILauncher::getCategoricalParameters(IMixtureStatModel* p_model, std::string const& idData, Rcpp::S4& s4_component)
-{
-  // get parameters
-  ArrayXX params;
-  p_model->getParameters(categoricalManager_,idData, params);
-  params.shift(0,0);
-  // save results in s4_model
-  s4_component.slot("plkj") = Rcpp::wrap(params);
-  // get data
-  s4_component.slot("data") = categoricalManager_.getData<int>(idData).matrix();
 }
 
 } // namespace STK

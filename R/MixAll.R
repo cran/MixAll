@@ -44,18 +44,18 @@
 #' multivariate quantitative positive data sets using gamma multidimensional models (24 models).
 #'    \item the \link{clusterPoisson} method allowing to discover group structures in
 #' multivariate counting data sets using Poisson multidimensional models (8 models).
-#'    \item the \link{clusterKernel} method allowing to discover group structures in
-#' any data sets using kernel trick (4 models).
+#    \item the \link{clusterKernel} method allowing to discover group structures in
+# any data sets using kernel trick (4 models).
 #'    \item the \link{clusterMixedData} method allowing to discover group structures in
 #' mixed data sets.
 #'  }
 #'
 #' \tabular{ll}{
-#'   Package: \tab rtkpp\cr
+#'   Package: \tab MixAll\cr
 #'   Type: \tab Package\cr
 #'   Version: \tab 0.8.1\cr
-#'   Date: \tab 2014-07-05\cr
-#'   License: \tab GPL for the MixAll and rtkpp side, LGPL for the stkpp side  + file LICENSE\cr
+#'   Date: \tab 2018-03-19\cr
+#'   License: \tab GPL for the MixAll and rtkore side, LGPL for the stkpp side  + file LICENSE\cr
 #'   LazyLoad: \tab yes\cr
 #' }
 #'
@@ -64,12 +64,10 @@
 #' @aliases MixAll
 #' @docType package
 #' @keywords STK++, stkpp
-#' @import Rcpp, rtkpp
 #'
 #' @author
 #' Author: Serge Iovleff \email{contact@@stkpp.org}
 #'
-#' @useDynLib rtkpp
 NULL
 
 #' Counting Data: DebTrivedi
@@ -97,14 +95,38 @@ NULL
 
 #' Quantitative Data: bullsEye 
 #'
-#' Generated  data  set  containing  two  clusters  with  untypical  ring
-#' shapes (circles)
+#' Generated data set containing two clusters with untypical ring shapes (circles)
 #' @name bullsEye
 #' @docType data
 #' @keywords datasets
 #'
 #' @examples
 #'   data(bullsEye)
+NULL
+
+
+#' label Data: bullsEye.target 
+#'
+#' Generated data set containing labels for the two clusters with untypical
+#' ring shapes (circles)
+#' @name bullsEye.target
+#' @docType data
+#' @keywords datasets
+#'
+#' @examples
+#'   data(bullsEye.target)
+NULL
+
+#' label Data: bullsEye.cat 
+#'
+#' Generated data set containing two categorical variables for the two clusters
+#' with untypical ring shapes (circles)
+#' @name bullsEye.cat
+#' @docType data
+#' @keywords datasets
+#'
+#' @examples
+#'   data(bullsEye.cat)
 NULL
 
 #' Quantitative data: Old Faithful Geyser
@@ -144,52 +166,6 @@ NULL
 #'   data(geyser)
 NULL
 
-#' Qualitative data: Survival of passengers on the Titanic
-#'
-#' For each person on board the fatal maiden voyage of the ocean liner Titanic,
-#' this dataset records: sex, age [adult/child], economic status [first/second/third class, or crew]
-#' and whether or not that person survived. There are no missing values.
-#'
-#' The sinking of the Titanic is a famous event, and new books are still being
-#' published about it. Many well-known facts-from the proportions of first-class
-#' passengers to the "women and children first" policy, and the fact that that
-#' policy was not entirely successful in saving the women and children in the
-#' third class-are reflected in the survival rates for various classes of passenger.
-#'
-#' These data were originally collected by the British Board of Trade in their
-#' investigation of the sinking. Note that there is not complete agreement among
-#' primary sources as to the exact numbers on board, rescued, or lost.
-#'
-#' Due in particular to the very successful film "Titanic", the last years saw
-#' a rise in public interest in the Titanic. Very detailed data about the
-#' passengers is now available on the Internet, at sites such as
-#' "Encyclopedia Titanica" (\url{http://www.rmplc.co.uk/eduweb/sites/phind}).
-#'
-#' @format A data frame with 2201 observations on the following 4 variables.
-#'
-#' \describe{
-#'   \item{\code{Class}}{0 = crew, 1 = first, 2 = second, 3 = third, which denote the economic status of the subject}
-#'   \item{\code{Age}}{1 = adult, 0 = child, which denote if the subject is an adult or a child}
-#'   \item{\code{Sex}}{1 = male, 0 = female, which denote the sex of the subject}
-#'   \item{\code{Survived}}{1 = yes, 0 = no, which denote if the subject lived through the fatal maiden voyage of the ocean liner Titanic}
-#' }
-#'
-#' @source
-#' The source provides a data set recording class, sex, age, and survival status
-#' for each person on board of the Titanic, and is based on data originally
-#' collected by the British Board of Trade and reprinted in:
-#' British Board of Trade (1990), "Report on the Loss of the Titanic (S.S.)".
-#' British Board of Trade Inquiry Report (reprint).  Gloucester, UK: Allan Sutton Publishing.
-#'
-#' This data set is also part of the Rmixmod package.
-#' 
-#' @name titanic
-#' @docType data
-#' @keywords datasets
-#'
-#' @examples
-#'   data(titanic)
-NULL
 
 #' Qualitative data : morphological description of birds
 #'

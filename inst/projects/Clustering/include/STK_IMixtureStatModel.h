@@ -42,6 +42,8 @@
 #include <Arrays/include/STK_CArrayVector.h>
 #include <Arrays/include/STK_CArray.h>
 
+#include <STatistiK/include/STK_Stat_Functors.h>
+
 #include "STK_Clust_Util.h"
 #include "STK_IMixture.h"
 #include "STK_IMixtureManager.h"
@@ -49,10 +51,9 @@
 
 namespace STK
 {
-// forward declaration
-class IMixture;
+
 /** @ingroup StatModels
- *  @brief Base class for Mixture (composed) model.
+ *  @brief Interface base class for Mixture (composed) model.
  *
  * In statistics, a mixture model is a probabilistic model for representing
  * the presence of sub-populations within an overall population, without
@@ -72,18 +73,15 @@ class IMixture;
  * unsupervised learning or clustering procedures. However not all inference
  * procedures involve such steps.
  *
- * The pure virtual function to implement in derived class are
+ * Pure virtual functions to implement in derived class are
  * @code
  *   virtual IMixtureComposer* create() const = 0;
  *   virtual IMixtureComposer* clone() const = 0;
- *   virtual void registerMixture(IMixture* p_mixture) = 0;
- *   virtual void releaseMixture(String const& idData) = 0;
  *   virtual bool randomInit() =0;
  *   virtual Real lnComponentProbability(int i, int k) const = 0;
- *   virtual int computeNbFreeParameters() const = 0;
  * @endcode
  *
- * The virtual function that can be re-implemented in derived class for a
+ * Virtual functions that can be re-implemented in derived class for a
  * specific behavior are:
  * @code
  *   virtual void imputationStep();
@@ -94,10 +92,28 @@ class IMixture;
  *   virtual void writeParameters(std::ostream& os) const;
  * @endcode
  *
- * @sa IMixtureComposer, IMixtureLearner
+ * Template functions allowing to interact with the composer are
+ * @code
+ *   template<class DataHandler>
+ *   void createMixture(IMixtureManager<DataHandler>& manager);
+ *   template<class DataHandler>
+ *   IMixture* createMixture(IMixtureManager<DataHandler>& manager, String const& idData);
+ *   template<class DataHandler>
+ *   void removeMixture(IMixtureManager<DataHandler>& manager, String const& idData);
+ *   template<class DataHandler, class Parameters>
+ *   void getParameters(IMixtureManager<DataHandler> const& manager, String const& idData, Parameters& param) const;
+ *   template<class DataHandler, class Parameters>
+ *   void setParameters(IMixtureManager<DataHandler> const& manager, String const& idData, Parameters const& param);
+ *   template<class Array>
+ *   void setMixtureParameters( Array const& tik);
+ *   template<class Array, class RowVector>
+ *   void setMixtureParameters( Array const& tik, RowVector const& pk);
+ * @endcode
+ *
+ * @sa IMixtureComposer, IMixtureLearner, IMixtureManager
  *
  * @note the virtual method @c IMixtureStatModel::initializeStep is called in all
- * the initialization method.  Don't forget to called it in the randomInit
+ * the initialization method. Don't forget to called it in the randomInit
  * implementation.
  */
 class IMixtureStatModel: public IStatModelBase
@@ -115,6 +131,7 @@ class IMixtureStatModel: public IStatModelBase
   public:
     typedef std::vector<IMixture*>::const_iterator ConstMixtIterator;
     typedef std::vector<IMixture*>::iterator MixtIterator;
+
     /** destructor */
     virtual ~IMixtureStatModel();
 
@@ -125,7 +142,7 @@ class IMixtureStatModel: public IStatModelBase
     /** @return the tik probabilities */
     inline CArrayXX const& tik() const { return tik_;};
     /** @return the proportions of individuals */
-    inline CPointX const& nk() const { return nk_;};
+    inline CPointX const& tk() const { return tk_;};
     /** @return the zi class label */
     inline CVectorXi const& zi() const { return zi_;};
     /** @return a constant reference on the vector of mixture */
@@ -171,8 +188,14 @@ class IMixtureStatModel: public IStatModelBase
       *  @return the number of free parameters
       **/
      int computeNbFreeParameters() const;
+     /** @brief compute the missing values of the model.
+      *  lookup on the mixtures and sum the nbMissingValues.
+      *  @return the number of missing values
+      **/
+     int computeNbMissingValues() const;
      /** @brief compute the number of variables of the model.
       *  lookup on the mixtures and sum the nbFreeParameter.
+      *  @return the number of variables
       **/
      int computeNbVariables() const;
 
@@ -183,7 +206,7 @@ class IMixtureStatModel: public IStatModelBase
     virtual IMixtureStatModel* clone() const = 0;
     /** initialize randomly the parameters of the components of the model */
     virtual void randomInit() = 0;
-    /** @return the value of the probability of the i-th sample in the k-th class.
+    /** @return the value of the probability of the ith sample in the kth class.
      *  @param i,k indexes of the sample and of the class
      **/
     virtual Real lnComponentProbability(int i, int k) const = 0;
@@ -222,8 +245,7 @@ class IMixtureStatModel: public IStatModelBase
     /** @brief Finalize the estimation of the model.
      *  The default behavior is compute current lnLikelihood.
      **/
-    inline virtual void finalizeStep()
-    { setLnLikelihood(computeLnLikelihood());}
+    inline virtual void finalizeStep() { setLnLikelihood(computeLnLikelihood());}
     /** write the parameters of the model in the stream os. */
     virtual void writeParameters(ostream& os) const {};
 
@@ -254,22 +276,42 @@ class IMixtureStatModel: public IStatModelBase
      *  @param param the structure which will receive the parameters
      **/
     template<class DataHandler, class Parameters>
-    void getParameters(IMixtureManager<DataHandler> const& manager, String const& idData, Parameters& param) const
-    { manager.getParameters(getMixture(idData), param);}
+    void getParameters(IMixtureManager<DataHandler> const& manager, String const& idData, Parameters& param) const;
     /** Utility method allowing to set the parameters to a specific mixture.
      *  @param manager the manager with the responsibility of the parameters
-     *  @param idData the Id of the data we want to set the parameters
-     *  @param param the structure which contains the parameters
+     *  @param idData Id of the data we want to set the parameters
+     *  @param param structure which contains the parameters
      **/
     template<class DataHandler, class Parameters>
-    void setParameters(IMixtureManager<DataHandler> const& manager, String const& idData, Parameters const& param)
-    { manager.setParameters(getMixture(idData), param);}
+    void setParameters(IMixtureManager<DataHandler> const& manager, String const& idData, Parameters const& param);
+    /** set the mixture parameters using an array of posterior probabilities.
+     *  Proportions, numbers in each class and class labels are computed
+     *  using these posterior probabilities.
+     *  @param tik posterior class probabilities
+     **/
+    template<class Array>
+    void setMixtureParameters( Array const& tik);
+    /** set the mixture parameters giving the posterior probabilities and
+     *  the proportions.
+     *  Numbers in each class and class labels are computed using the
+     *  posterior probabilities.
+     *  @param tik posterior class probabilities
+     *  @param pk prior class proportion
+     **/
+    template<class Array, class RowVector>
+    void setMixtureParameters( Array const& tik, RowVector const& pk);
+    /** Set proportions of each classes
+     *  @param pk prior class proportion
+     **/
+    template<class RowVector>
+    void setProportions( RowVector const& pk);
 
   protected:
     /** set the number of cluster of the model
      *  @param nbCluster number of cluster of the model
      * */
     inline void setNbCluster( int nbCluster) { nbCluster_ = nbCluster;}
+
     /** number of cluster. */
     int nbCluster_;
     /** The proportions of each mixtures */
@@ -277,7 +319,7 @@ class IMixtureStatModel: public IStatModelBase
     /** The tik probabilities */
     CArrayXX tik_;
     /** The sum of the columns of tik_ */
-    CPointX nk_;
+    CPointX tk_;
     /** The zi class label */
     CVectorXi zi_;
 
@@ -286,15 +328,15 @@ class IMixtureStatModel: public IStatModelBase
 };
 
 
-/* Utility method allowing to create all the mixtures handled by a mixture
- * manager.
+/* Utility method allowing to create all the mixtures handled by a mixture manager.
  *  @param manager the manager with the responsibility of the creation.
  **/
 template<class DataHandler>
 void IMixtureStatModel::createMixture(IMixtureManager<DataHandler>& manager)
 {
   typedef typename DataHandlerBase<DataHandler>::InfoMap InfoMap;
-  for ( typename InfoMap::const_iterator it=manager.p_handler()->info().begin(); it!=manager.p_handler()->info().end(); ++it)
+  typedef typename InfoMap::const_iterator const_iterator;
+  for ( const_iterator it=manager.p_handler()->info().begin(); it!=manager.p_handler()->info().end(); ++it)
   {
     IMixture* p_mixture = manager.createMixture(it->first, nbCluster());
 #ifdef STK_MIXTURE_DEBUG
@@ -342,6 +384,74 @@ void IMixtureStatModel::removeMixture(IMixtureManager<DataHandler>& manager, Str
     manager.releaseDataBridge( idData);
   }
 }
+
+/* Utility method allowing to get the parameters of a specific mixture.
+ *  @param manager the manager with the responsibility of the parameters
+ *  @param idData the Id of the data we want the parameters
+ *  @param param the structure which will receive the parameters
+ **/
+template<class DataHandler, class Parameters>
+void IMixtureStatModel::getParameters(IMixtureManager<DataHandler> const& manager, String const& idData, Parameters& param) const
+{  IMixture* p_mixture= getMixture(idData);
+   if (p_mixture) manager.getParameters(p_mixture, param);
+}
+/* Utility method allowing to set the parameters to a specific mixture.
+ *  @param manager the manager with the responsibility of the parameters
+ *  @param idData Id of the data we want to set the parameters
+ *  @param param structure which contains the parameters
+ **/
+template<class DataHandler, class Parameters>
+void IMixtureStatModel::setParameters(IMixtureManager<DataHandler> const& manager, String const& idData, Parameters const& param)
+{ IMixture* p_mixture= getMixture(idData);
+  if (p_mixture) manager.setParameters(p_mixture, param);
+}
+/* set the mixture parameters using the posterior probabilities.
+ **/
+template<class Array>
+void IMixtureStatModel::setMixtureParameters(Array const& tik)
+{
+  tik_ = tik;
+  tk_ = Stat::sumByCol(tik_);
+  pk_ = tk_ / nbSample();
+  for (int i = tik_.beginCols(); i< tik_.endCols(); ++i)
+  {
+    int k;
+    tik_.row(i).maxElt(k);
+    zi_[i] = k;
+  }
+}
+
+/* set the mixture parameters using the posterior probabilities.
+ **/
+template<class Array, class RowVector>
+void IMixtureStatModel::setMixtureParameters(Array const& tik, RowVector const& pk)
+{
+#ifdef STK_MIXTURE_DEBUG
+  if (pk_.size() != tik_.sizeCols())
+  { STKRUNTIME_ERROR_2ARG(IMixtureLearner::setMixtureParameters,pk_.size(),tik_.sizeCols(),Numbers of class in tik and pk differ);}
+#endif
+  tik_ = tik;
+  pk_  = pk;
+  tk_  = Stat::sumByCol(tik_);
+  for (int i = tik_.beginCols(); i< tik_.endCols(); ++i)
+  {
+    int k;
+    tik_.row(i).maxElt(k);
+    zi_[i] = k;
+  }
+}
+
+/* set proportions */
+template<class RowVector>
+void IMixtureStatModel::setProportions( RowVector const& pk)
+{
+#ifdef STK_MIXTURE_DEBUG
+  if (pk_.size() != nbCluster())
+  { STKRUNTIME_ERROR_2ARG(IMixtureLearner::setProportions,pk_.size(),tik_.nbCluster(),Numbers of class in pk differs);}
+#endif
+  pk_  = pk;
+}
+
 
 } // namespace STK
 

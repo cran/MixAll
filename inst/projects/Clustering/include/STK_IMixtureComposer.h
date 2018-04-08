@@ -142,19 +142,21 @@ class IMixtureComposer: public IMixtureStatModel
     virtual void pStep();
     /** @brief Initialize the model before its first use.
      *  Initialize the values of the mixture parameters @c pk_ and @© tik_ using
-     *  virtual method @c initializeMixtureParameters() and compute @c nk_ and
+     *  virtual method @c initializeMixtureParameters() and compute @c tk_ and
      *  @c zk_ using the virtual methods @c mapStep() and @c pStep().
      **/
     virtual void initializeStep();
+
     // not virtual
     /** Initialize randomly the labels zi of the model.
      *  Initialize the model parameters using initializeStep() if it has not
-     *  been already called. Simulate the zi, compute tik using cStep(), update
+     *  been already called. Simulate the zi, compute tik using eStep(), update
      *  the parameters using paramUpdateStep() and terminate using eStep().
      **/
     void randomClassInit();
-    /** Initialize randomly the posterior probabilities tik of the model.
-     *  Initialize the model parameters and compute the tik.
+    /** Initialize randomly the posterior probabilities tik of the model, then
+     *  compute the zi values with mapStep, compute the initial parameter values using
+     *  paramUpdateStep, and compute the tik using eStep().
      **/
     void randomFuzzyInit();
 

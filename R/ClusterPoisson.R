@@ -22,7 +22,7 @@
 #    Contact : S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
 #
 #-----------------------------------------------------------------------
-#' @include ClusterModelNames.R IClusterModel.R
+#' @include global.R ClusterModelNames.R IClusterModel.R
 NULL
 
 #-----------------------------------------------------------------------
@@ -44,7 +44,7 @@ NULL
 #' the strategy to run. [\code{\link{clusterStrategy}}]() method by default.
 #' @param criterion character defining the criterion to select the best model.
 #' The best model is the one with the lowest criterion value.
-#' Possible values: "BIC", "AIC", "ICL". Default is "ICL".
+#' Possible values: "BIC", "AIC", "ICL", "ML". Default is "ICL".
 #' @param nbCore integer defining the number of processor to use (default is 1, 0 for all).
 #'
 #' @examples
@@ -72,11 +72,11 @@ NULL
 #'
 #' @return An instance of the [\code{\linkS4class{ClusterPoisson}}] class.
 #' @author Serge Iovleff
-#' @export
+#'
 #'
 clusterPoisson <- function( data, nbCluster=2
                           , models= clusterPoissonNames()
-                          , strategy=clusterFastStrategy()
+                          , strategy=clusterStrategy()
                           , criterion="ICL"
                           , nbCore = 1)
 {
@@ -108,9 +108,10 @@ clusterPoisson <- function( data, nbCluster=2
   # Create model
   model = new("ClusterPoisson", data)
   model@strategy = strategy;
-
+  model@criterionName = criterion
+  
   # start estimation of the models
-  resFlag = .Call("clusterMixture", model, nbCluster, models, strategy, criterion, nbCore, PACKAGE="MixAll")
+  resFlag = .Call("clusterMixture", model, nbCluster, models, nbCore, PACKAGE="MixAll")
 
   # set names
   if (resFlag != 1) {cat("WARNING: An error occur during the clustering process")}
@@ -135,10 +136,9 @@ clusterPoisson <- function( data, nbCluster=2
 #' @name ClusterPoissonComponent
 #' @rdname IClusterComponent-class
 #' @aliases ClusterPoissonComponent-class
-#' @exportClass ClusterPoissonComponent
 #'
 setClass(
-    Class="ClusterPoissonComponent",
+    Class = "ClusterPoissonComponent",
     representation( lambda = "matrix"),
     contains=c("IClusterComponent"),
     validity=function(object)
@@ -212,7 +212,14 @@ setMethod(
   signature=c("ClusterPoissonComponent"),
   function(x,k,...)
   {
-    cat("* lambda     = ", format(x@lambda[k,]), "\n")
+    if(missing(k))
+    {
+      callNextMethod()
+    }
+    else
+    {
+      cat("* lambda     = ", format(x@lambda[k,]), "\n")
+    }
   }
 )
 
@@ -223,7 +230,7 @@ setMethod(
   signature=c("ClusterPoissonComponent"),
   function(object)
   {
-    cat("* lambda     = ", format(object@lambda), "\n")
+    callNextMethod()
   }
 )
 
@@ -252,10 +259,9 @@ setMethod(
 #' @name ClusterPoisson
 #' @rdname ClusterPoisson-class
 #' @aliases ClusterPoisson-class
-#' @exportClass ClusterPoisson
 #'
 setClass(
-    Class="ClusterPoisson",
+    Class = "ClusterPoisson",
     representation( component = "ClusterPoissonComponent"),
     contains=c("IClusterModel"),
     validity=function(object)
@@ -301,6 +307,7 @@ setMethod(
   signature=c("ClusterPoisson"),
   function(x,...){
     cat("****************************************\n")
+    print(x@component)
     callNextMethod();
     cat("****************************************\n")
     for(k in 1:length(x@pk))
@@ -321,8 +328,8 @@ setMethod(
   function(object)
   {
     cat("****************************************\n")
+    show(object@component)
     callNextMethod();
-    show(object@component);
     cat("****************************************\n")
     for(k in 1:length(object@pk))
     {
@@ -342,76 +349,12 @@ setMethod(
   signature=c("ClusterPoisson"),
   function(object, ...)
   {
-    cat("**************************************************************\n")
+    cat("****************************************\n")
+    cat("* model name     =",object@component@modelName,"\n")
     callNextMethod()
-    summary(object@component);
-    cat("**************************************************************\n")
+    cat("****************************************\n")
   }
 )
-
-## #-----------------------------------------------------------------------
-## #' Definition of the [\code{\linkS4class{PredictPoisson}}] class
-## #'
-## #' This class defines a predictor for diagonal Gaussian mixture Model.
-## #'
-## #' @slot model  A valid [\code{\linkS4class{ClusterDiagGaussian}}] class.
-## #' @slot data   A matrix with the data to predict.
-## #' @seealso [\code{\linkS4class{IClusterModel}}] class
-## #'
-## #' @examples
-## #' getSlots("PredictPoisson")
-## #'
-## #' @author Serge Iovleff
-## #'
-## #' @name PredictPoisson
-## #' @rdname PredictPoisson-class
-## #' @aliases PredictPoisson-class
-## #' @exportClass PredictPoisson
-## #'
-## setClass(
-##     Class="PredictPoisson",
-##     representation( model = "ClusterPoisson", data = "matrix"),
-##     contains=c("IClusterPredict"),
-##     validity=function(object)
-##     {
-##       # check model
-##       if(class(object@model)[1] != "ClusterPoisson")
-##       { stop("model must be an instance of ClusterPoisson.")}
-##       if (!validObject(object@model)) {stop("model is not valid.")}
-##       # check data
-##       if (ncol(object@model@component@data)!= ncol(object@data))
-##       {stop("data must have the same number of column.")}
-##       return(TRUE)
-##     }
-## )
-## 
-## #' Initialize an instance of a MixAll S4 class.
-## #'
-## #' Initialization method of the [\code{\linkS4class{PredictPoisson}}] class.
-## #' Used internally in the 'MixAll' package.
-## #'
-## #' @rdname initialize-methods
-## #' @keywords internal
-## setMethod(
-##     f="initialize",
-##     signature=c("PredictPoisson"),
-##     definition=function(.Object, model, data)
-##     {
-##       # check model
-##       if(missing(model)) {stop("model is mandatory in PredictPoisson.")}
-##       if(class(model)[1] != "ClusterDiagGaussian")
-##       { stop("model must be an instance of ClusterPoisson.")}
-##       # for data
-##       if(missing(data)) {stop("data is mandatory in PredictPoisson.")}
-##       # create slots
-##       .Object@model <- model
-##       .Object@data <- as.matrix(data, ncol= ncol(model@component@data))
-##       # validate
-##       .Object <- callNextMethod(.Object, nrow(.Object@data), .Object@model@nbCluster);
-##       validObject(.Object)
-##       return(.Object)
-##     }
-## )
 
 #' Plotting of a class [\code{\linkS4class{ClusterPoisson}}]
 #'
@@ -423,11 +366,10 @@ setMethod(
 #' If missingValues all the variables are represented.
 #' @param ... further arguments passed to or from other methods
 #'
-#' @importFrom graphics plot
 #' @aliases plot-ClusterPoisson, ClusterPoisson-method
 #' @docType methods
 #' @rdname plot-ClusterPoisson-method
-#' @export
+#'
 #'
 #' @seealso \code{\link{plot}}
 #' @examples

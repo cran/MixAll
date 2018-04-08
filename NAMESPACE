@@ -1,4 +1,5 @@
 export(clusterAlgo
+      ,clusterAlgoPredict
       ,learnAlgo
       ,clusterInit
       ,clusterStrategy
@@ -9,27 +10,31 @@ export(clusterAlgo
       ,clusterGammaNames
       ,clusterCategoricalNames
       ,clusterPoissonNames
-      ,clusterKernelNames
       ,clusterValidGammaNames
       ,clusterValidCategoricalNames
       ,clusterValidPoissonNames
       ,clusterValidDiagGaussianNames
-      ,clusterValidKernelNames
       ,clusterDiagGaussian
       ,clusterGamma
       ,clusterCategorical
       ,clusterPoisson
       ,clusterMixedData
-      ,clusterKernel
+      ,clusterPredict
+      ,kmmNames
+      ,kmmValidModelNames
+      ,kmmValidKernelNames
+      ,kmmStrategy
+      ,kmm
+      ,kmmMixedData
       ,learnDiagGaussian
       ,learnGamma
       ,learnPoisson
       ,learnCategorical
       ,learnMixedData
-      ,learnKernel
       )
 
 exportClasses(ClusterAlgo
+             ,ClusterAlgoPredict
              ,LearnAlgo
              ,ClusterInit
              ,ClusterStrategy
@@ -43,9 +48,13 @@ exportClasses(ClusterAlgo
              ,ClusterCategorical
              ,ClusterPoissonComponent
              ,ClusterPoisson
-             ,ClusterMixedData
-             ,ClusterKernelComponent
-             ,ClusterKernel
+             ,ClusterMixedDataModel
+             ,IClusterPredict
+             ,ClusterPredict
+             ,ClusterPredictMixedData
+             ,KmmComponent
+             ,KmmModel
+             ,KmmMixedDataModel
              )
 
 exportMethods(print)
@@ -57,7 +66,7 @@ exportMethods(missingValues)
 import(rtkore)
 
 importFrom("graphics", "close.screen", "hist", "lines", "par", "screen", "split.screen")
-importFrom("methods", "show", "callNextMethod", "new", "validObject")
+importFrom("methods", "show", "callNextMethod", "new", "validObject", "is", ".hasSlot")
 importFrom("stats", "cov.wt", "dgamma", "dnorm", "dpois")
 
 useDynLib(MixAll)

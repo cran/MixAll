@@ -25,6 +25,99 @@
 #' @include ClusterStrategy.R
 NULL
 
+#-----------------------------------------------------------------------
+#' Definition of the [\code{\linkS4class{IClusterComponent}}] class
+#'
+#' Interface base class defining a component of a mixture Model
+#'
+#' @slot data  Matrix with the data set
+#' @slot missing  Matrix with the indexes of the missing values
+#' @slot modelName model name associated with the data set
+#'
+#' @examples
+#' getSlots("IClusterComponent")
+#'
+#' @author Serge Iovleff
+#'
+#' @name IClusterComponent
+#' @rdname IClusterComponent-class
+#' @aliases IClusterComponent-class
+#' 
+setClass(
+  Class = "IClusterComponent",
+  representation( data      = "matrix"
+                , missing   = "matrix"
+                , modelName = "character"
+                , "VIRTUAL"
+                ),
+  validity=function(object)
+  {
+    return(TRUE);
+  }
+)
+#' Initialize an instance of a MixAll S4 class.
+#'
+#' Initialization method of the [\code{\linkS4class{IClusterComponent}}] class.
+#' Used internally in the 'MixAll' package.
+#'
+#' @rdname initialize-methods
+#' @keywords internal
+setMethod(
+  f="initialize",
+  signature=c("IClusterComponent"),
+  definition=function(.Object, data, modelName)
+  {
+    # fill data missing and modelName
+    .Object@data      <- as.matrix(data);
+    .Object@missing   <- which(is.na(.Object@data), arr.ind=TRUE);
+    .Object@modelName <- modelName;
+    return(.Object)
+  }
+)
+#' @rdname print-methods
+#' @aliases print print,IClusterComponent-method
+#'
+setMethod(
+  f="print",
+  signature=c("IClusterComponent"),
+  function(x,...)
+  {
+    cat("* model name    =",x@modelName,"\n");
+    cat("* data          =\n");
+    print(format(x@data),quote=FALSE) 
+    cat("* missing       =\n");
+    print(format(x@missing),quote=FALSE)
+  }
+)
+
+#' @rdname show-methods
+#' @aliases show-IClusterComponent,IClusterComponent,IClusterComponent-method
+setMethod(
+  f="show",
+  signature=c("IClusterComponent"),
+  function(object)
+  {
+    cat("* model name     =",object@modelName,"\n");
+    if(length(object@data)!=0)
+    {
+      nrowShow <- min(10,nrow(object@data));
+      ncolShow <- min(10,ncol(object@data));
+      cat("* data (limited to 10 samples and 10 variables) =\n")
+      print(format(object@data[1:nrowShow,1:ncolShow]),quote=FALSE)
+    }
+    cat("* ... ...\n")
+  }
+)
+
+#' @rdname summary-methods
+#' @aliases summary summary,IClusterComponent-method
+setMethod(
+  f="summary",
+  signature=c("IClusterComponent"),
+  function(object, ...)
+  { cat("* model name     =",object@modelName,"\n");}
+)
+
 #' Interface base Class [\code{\linkS4class{IClusterModel}}] for Cluster models.
 #'
 #' This class encapsulate the common parameters of all the Cluster models.
@@ -43,10 +136,12 @@ NULL
 #' @slot pk        Vector of size K with the proportions of each mixture.
 #' @slot tik       Matrix of size \eqn{n \times K} with the posterior probability of
 #' the ith individual to belong to kth cluster.
-#' @slot lnFi        Vector of size n with the log-likelihood of the ith individuals.
+#' @slot lnFi      Vector of size n with the log-likelihood of the ith individuals.
 #' @slot zi        Vector of integer of size n  with the attributed class label of the individuals.
 #' @slot lnLikelihood Real given the ln-liklihood of the Cluster model.
-#' @slot criterion Real given the value of the AIC, BIC or ICL criterion.
+#' @slot criterion    Real given the value of the AIC, BIC, ICL or ML criterion.
+#' @slot criterionName string with the name of the criterion. Possible values
+#' are "BIC", "AIC", "ICL" or "ML". Default is "ICL".
 #' @slot nbFreeParameter Integer given the number of free parameters of the model.
 #' @slot strategy  the instance of the [\code{\linkS4class{ClusterStrategy}}] used in the
 #' estimation process of the mixture. Default is clusterStrategy().
@@ -59,19 +154,20 @@ NULL
 #' @name IClusterModel
 #' @rdname ClusterModels-class
 #' @aliases IClusterModel-class
-#' @exportClass IClusterModel
+#' 
 setClass(
-  Class="IClusterModel",
-  representation( nbSample = "numeric"
-                , nbCluster = "numeric"
-                , pk = "numeric"
-                , tik = "matrix"
-                , lnFi = "numeric"
-                , zi = "integer"
-                , lnLikelihood = "numeric"
-                , criterion = "numeric"
+  Class = "IClusterModel",
+  representation( nbSample        = "numeric"
+                , nbCluster       = "numeric"
+                , pk              = "numeric"
+                , tik             = "matrix"
+                , lnFi            = "numeric"
+                , zi              = "integer"
+                , lnLikelihood    = "numeric"
+                , criterionName   = "character"
+                , criterion       = "numeric"
                 , nbFreeParameter = "numeric"
-                , strategy = "ClusterStrategy"
+                , strategy        = "ClusterStrategy"
                 , "VIRTUAL"
                 ),
   # validity function
@@ -111,6 +207,9 @@ setClass(
     {stop("zi must have nbSample size.")}
     return(TRUE)
 
+    # check criterion
+    if(sum(criterionName %in% c("BIC","AIC", "ICL", "ML")) != 1)
+    { stop("criterionName is not valid. See ?IClusterModel for the list of valid criterion\n")}
     # check nbFreeParameter
     if (round(object@nbFreeParameter)!=object@nbFreeParameter)
     {stop("nbFreeParameter must be an integer.")}
@@ -149,6 +248,7 @@ setMethod(
     .Object@zi   <- as.integer(rep(1, nbSample))
     # set default values
     .Object@lnLikelihood = -Inf
+    .Object@criterionName=  "ICL"
     .Object@criterion    =  Inf
     .Object@nbFreeParameter = 0
     # set strategy
@@ -171,7 +271,8 @@ setMethod(
     cat("* nbCluster      = ", x@nbCluster, "\n")
     cat("* lnLikelihood   = ", x@lnLikelihood,"\n")
     cat("* nbFreeParameter= ", x@nbFreeParameter,"\n")
-    cat("* criterion      = ", x@criterion, "\n")
+    cat("* criterion name = ", x@criterionName, "\n")
+    cat("* criterion value= ", x@criterion, "\n")
     cat("* zi             =\n")
     print( format(x@zi), quote=FALSE)
   }
@@ -188,7 +289,8 @@ setMethod(
     cat("* nbCluster      = ", object@nbCluster, "\n")
     cat("* lnLikelihood   = ", object@lnLikelihood,"\n")
     cat("* nbFreeParameter= ", object@nbFreeParameter,"\n")
-    cat("* criterion      = ", object@criterion, "\n")
+    cat("* criterion name = ", object@criterionName, "\n")
+    cat("* criterion value= ", object@criterion, "\n")
   }
 )
 
@@ -203,175 +305,8 @@ setMethod(
     cat("* nbCluster      = ", object@nbCluster, "\n")
     cat("* lnLikelihood   = ", object@lnLikelihood,"\n")
     cat("* nbFreeParameter= ", object@nbFreeParameter, "\n")
-    cat("* criterion      = ", object@criterion, "\n")
+    cat("* criterion name = ", object@criterionName, "\n")
+    cat("* criterion value= ", object@criterion, "\n")
   }
 )
 
-#-----------------------------------------------------------------------
-#' Definition of the [\code{\linkS4class{IClusterComponent}}] class
-#'
-#' This class defines a component of a mixture Model
-#'
-#' @slot data  Matrix with the data set
-#' @slot missing  Matrix with the indexes of the missing values
-#' @slot modelName model name associated with the data set
-#'
-#' @examples
-#' getSlots("IClusterComponent")
-#'
-#' @author Serge Iovleff
-#'
-#' @name IClusterComponent
-#' @rdname IClusterComponent-class
-#' @aliases IClusterComponent-class
-#' @exportClass IClusterComponent
-#'
-setClass(
-  Class="IClusterComponent",
-  representation( data = "matrix"
-                , missing = "matrix"
-                , modelName = "character"
-                , "VIRTUAL"),
-  validity=function(object)
-  {
-# called too soon when Component is part of an other S4 class
-#    if (!is.matrix(data)) { stop("data must be a matrix in IClusterComponent");}
-#    if (!is.matrix(missing)) { stop("missing must be a matrix in IClusterComponent");}
-#    if (!is.character(modelName)) { stop("modelName must be a character in IClusterComponent");}
-    return(TRUE);
-  }
-)
-#' Initialize an instance of a MixAll S4 class.
-#'
-#' Initialization method of the [\code{\linkS4class{IClusterComponent}}] class.
-#' Used internally in the 'MixAll' package.
-#'
-#' @rdname initialize-methods
-#' @keywords internal
-setMethod(
-  f="initialize",
-  signature=c("IClusterComponent"),
-  definition=function(.Object, data, modelName)
-  {
-    # fill data missing and modelName
-    .Object@data      <- as.matrix(data);
-    .Object@missing   <- which(is.na(.Object@data), arr.ind=TRUE);
-    .Object@modelName <- modelName;
-    return(.Object)
-  }
-)
-#' @rdname print-methods
-#' @aliases print print,IClusterComponent-method
-#'
-setMethod(
-  f="print",
-  signature=c("IClusterComponent"),
-  function(x,...)
-  {
-    cat("* model name   =",x@modelName,"\n");
-    cat("* data         =\n");
-    print(format(x@data),quote=FALSE)
-    cat("* missing     =\n");
-    print(format(x@missing),quote=FALSE)
-  }
-)
-
-#' @rdname show-methods
-#' @aliases show-IClusterComponent,IClusterComponent,IClusterComponent-method
-setMethod(
-  f="show",
-  signature=c("IClusterComponent"),
-  function(object)
-  {
-    cat("* model name   =",object@modelName,"\n");
-    cat("*\n");
-    if(length(object@data)!=0)
-    {
-      nrowShow <- min(10,nrow(object@data));
-      ncolShow <- min(10,ncol(object@data));
-      cat("* data (limited to 10 samples and 10 variables) =\n")
-      print(format(object@data[1:nrowShow,1:ncolShow]),quote=FALSE)
-    }
-    cat("* ... ...\n")
-  }
-)
-
-#' @rdname summary-methods
-#' @aliases summary summary,IClusterComponent-method
-setMethod(
-  f="summary",
-  signature=c("IClusterComponent"),
-  function(object, ...)
-  { cat("* model name     =",object@modelName,"\n");}
-)
-## 
-## #-----------------------------------------------------------------------
-## #' Interface base Class [\code{\linkS4class{IClusterPredict}}] for predictors
-## #' using cluster models.
-## #'
-## #' This class encapsulate the common parameters of all the predictors using a
-## #' cluster model.
-## #'
-## #'
-## #' @slot tik  Matrix of size \eqn{n \times K} with the predicted posterior
-## #' probabilities of the ith individual to belong to kth cluster.
-## #' @slot lnFi Vector of size n with the predicted log-likelihood of the ith
-## #' individuals.
-## #' @slot zi   Vector of integer of size n with the predicted class label of
-## #' the individuals.
-## #'
-## #' @examples
-## #'   getSlots("IClusterPredict")
-## #'
-## #' @author Serge Iovleff
-## #'
-## #' @name IClusterPredict
-## #' @rdname IClusterPredict-class
-## #' @aliases IClusterPredict-class
-## #' @exportClass IClusterPredict
-## #'
-## setClass(
-##     Class="IClusterPredict",
-##     representation( nbSample = "numeric"
-##                   , nbCluster = "numeric"
-##                   , tik = "matrix"
-##                   , lnFi = "numeric"
-##                   , zi = "integer"
-##                   , "VIRTUAL"
-##                   ),
-##     validity=function(object)
-##     {
-##       return(TRUE)
-##     }
-## )
-## 
-## #' Initialize an instance of a MixAll S4 class.
-## #'
-## #' Initialization method of the [\code{\linkS4class{IClusterPredict}}] class.
-## #' Used internally in the 'MixAll' package.
-## #'
-## #' @rdname initialize-methods
-## #' @keywords internal
-## #'
-## setMethod(
-##     f="initialize",
-##     signature=c("IClusterPredict"),
-##     definition=function(.Object, nbSample, nbCluster)
-##     {
-##       # for nbSample
-##       if(missing(nbSample)) { stop("nbSample is mandatory in IClusterPredict.")}
-##       .Object@nbSample <- nbSample;
-##       # for nbCluster
-##       if(missing(nbCluster)) { stop("nbCluster is mandatory in IClusterPredict.")}
-##       .Object@nbCluster<-nbCluster
-##       # resize
-##       .Object@pk   <- rep(1/nbCluster, nbCluster)
-##       .Object@tik  <- matrix(1/nbCluster, nbSample, nbCluster)
-##       .Object@lnFi <- rep(0, nbSample)
-##       .Object@zi   <- as.integer(rep(1, nbSample))
-##       # validObject(.Object) will be called at the end of the initialization process
-##       # in the derived classes
-##       return(.Object)
-##     }
-## )
-## 

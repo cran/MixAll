@@ -22,6 +22,9 @@
 #    Contact : S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
 #
 #-----------------------------------------------------------------------
+#' @include ClusterAlgo.R
+NULL
+
 #' Create an instance of [\code{\linkS4class{ClusterInit}}] class
 #'
 #' The initialization step is a two stages process: the proper initialization step
@@ -58,7 +61,7 @@
 #'
 #' @return a [\code{\linkS4class{ClusterInit}}] object
 #' @author Serge Iovleff
-#' @export
+#'
 clusterInit <- function( method="class", nbInit=5,  algo = "EM", nbIteration=20, epsilon=0.01)
 {
   # check criterion
@@ -114,12 +117,11 @@ clusterInit <- function( method="class", nbInit=5,  algo = "EM", nbIteration=20,
 #' @name ClusterInit
 #' @rdname ClusterInit-class
 #' @aliases ClusterInit-class
-#' @exportClass ClusterInit
 #'
 setClass(
-  Class="ClusterInit",
+  Class = "ClusterInit",
   slots=c(method="character", nbInit = "numeric", algo = "ClusterAlgo"),
-  prototype=list(method="class", nbInit = 5, algo = clusterAlgo("EM", 20, 0.01)),
+  prototype=list(method="class", nbInit = 5, algo = clusterAlgo(algo="EM", nbIteration=20, epsilon=0.01)),
   # validity function
   validity=function(object)
   {
@@ -178,16 +180,14 @@ setMethod(
   f="print",
   signature=c("ClusterInit"),
   function(x,...){
-    function(object){
       cat("****************************************\n")
       cat("*** MixAll ClusterInit:\n")
-      cat("* method               = ", object@method, "\n")
-      cat("* number of init       = ", object@nbInit, "\n")
-      cat("* algorithm            = ", object@algo@algo, "\n")
-      cat("* number of iterations = ", object@algo@nbIteration, "\n")
-      cat("* epsilon              = ", object@algo@epsilon, "\n")
+      cat("* method               = ", x@method, "\n")
+      cat("* number of init       = ", x@nbInit, "\n")
+      cat("* algorithm            = ", x@algo@algo, "\n")
+      cat("* number of iterations = ", x@algo@nbIteration, "\n")
+      cat("* epsilon              = ", x@algo@epsilon, "\n")
       cat("****************************************\n")
-    }
   }
 )
 

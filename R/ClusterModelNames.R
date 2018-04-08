@@ -21,6 +21,7 @@
 #
 #    Contact : S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
 #
+NULL
 
 #-----------------------------------------------------------------------
 #' Create a vector of diagonal Gaussian mixture model names.
@@ -58,7 +59,7 @@
 #' clusterDiagGaussianNames(prop="all", sdInCluster="equal", sdBetweenCluster= "free")
 #'
 #' @rdname clusterDiagGaussianNames
-#' @export
+#'
 clusterDiagGaussianNames <- function(prop = "all", sdInCluster="all", sdBetweenCluster = "all")
 {
   if(sum(prop %in% c("equal","free","all")) != 1)
@@ -145,7 +146,7 @@ clusterValidDiagGaussianNames <- function(names)
 #' clusterGammaNames("all", "equal", "free", "free", "equal")
 #'
 #' @rdname clusterGammaNames
-#' @export
+#'
 clusterGammaNames <- function( prop = "all", shapeInCluster="all", shapeBetweenCluster="all"
                              , scaleInCluster= "all", scaleBetweenCluster="all")
 {
@@ -288,7 +289,7 @@ clusterValidGammaNames <- function(names)
 #' clusterCategoricalNames("all", "equal") # same as c( "categorical_pk_pk", "categorical_p_pk")
 #'
 #' @rdname clusterCategoricalNames
-#' @export
+#'
 clusterCategoricalNames <- function(prop = "all", probabilities="all")
 {
   if(sum(prop %in% c("equal","free","all")) != 1)
@@ -354,7 +355,7 @@ clusterValidCategoricalNames <- function(names)
 #' clusterPoissonNames("all", "proportional") # same as c( "poisson_pk_ljlk", "poisson_p_ljlk")
 #'
 #' @rdname clusterPoissonNames
-#' @export
+#'
 clusterPoissonNames <- function(prop = "all", mean="all")
 {
   if(sum(prop %in% c("equal","free","all")) != 1)
@@ -393,67 +394,3 @@ clusterValidPoissonNames <- function(names)
   return(TRUE)
 }
 
-#' Create a vector of Kernel mixture model names.
-#'
-#' In a diagonal Kernel mixture model, we can assume that
-#' \enumerate{
-#'  \item {The proportions can be equal or free.}
-#'  \item {The standard deviations can be equal or free for all the clusters.}
-#' }
-#' This give rise to four models.
-#'
-#' The model names are summarized in the following array:
-#' \tabular{lll}{
-#'  Model Name           \tab Proportions \tab s.d. between clusters \cr
-#'  kernelGaussian_p_sk  \tab Equal       \tab Free                  \cr
-#'  kernelGaussian_p_s   \tab Equal       \tab Equal                 \cr
-#'  kernelGaussian_pk_sk \tab Free        \tab Free                  \cr
-#'  kernelGaussian_pk_s  \tab Free        \tab Equal                 \cr
-#' }
-#'
-#' @param prop A character string equal to "equal", "free" or "all". Default is "all".
-#' @param sdBetweenCluster A character string equal to "equal", "free" or "all". Default is "all".
-#'
-#' @return A vector of character with the model names.
-#' @examples
-#' clusterKernelNames()
-#' ## same as c("kernelGaussian_p_sk", "kernelGaussian_pk_sk")
-#' clusterKernelNames(prop="all", sdBetweenCluster= "free")
-#'
-#' @rdname clusterKernelNames
-#' @export
-clusterKernelNames <- function(prop = "all", sdBetweenCluster = "all")
-{
-  if(sum(prop %in% c("equal","free","all")) != 1)
-  { stop("prop is not valid. See ?clusterKernelNames for the list of prop.")}
-  if(sum(sdBetweenCluster %in% c("equal","free","all")) != 1)
-  { stop("sdBetweenCluster is not valid. See ?clusterKernelNames for the list of sdBetweenCluster.")}
-
-  all = c( "kernelGaussian_pk_sk", "kernelGaussian_pk_s", "kernelGaussian_p_sk", "kernelGaussian_p_s")
-  propFree  = c( "kernelGaussian_pk_sk", "kernelGaussian_pk_s")
-  propEqual = c( "kernelGaussian_p_sk", "kernelGaussian_p_s")
-  sdKFree   = c( "kernelGaussian_pk_sk", "kernelGaussian_p_sk")
-  sdKEqual  = c( "kernelGaussian_pk_s", "kernelGaussian_p_s")
-
-  res = all;
-  if (prop == "free")  { res = intersect(res, propFree);}
-  if (prop == "equal") { res = intersect(res, propEqual);}
-  if (sdBetweenCluster =="free")  { res = intersect(res, sdKFree);}
-  if (sdBetweenCluster =="equal") { res = intersect(res, sdKEqual);}
-
-  res
-}
-
-#' check if a vector of kernel mixture model name is correct.
-#' @param names a vector of character
-#' @rdname clusterKernelNames
-clusterValidKernelNames <- function(names)
-{
-  nb = length(names)
-  if ( nb == 0 ) { return(FALSE);}
-
-  all = clusterKernelNames();
-  for (i in 1:nb)
-  {  if ( sum(names[i] %in% all) != 1 ) { return(FALSE);}}
-  return(TRUE)
-}

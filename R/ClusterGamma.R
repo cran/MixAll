@@ -22,7 +22,7 @@
 #    Contact : S..._Dot_I..._At_stkpp_Dot_org (see copyright for ...)
 #
 #-----------------------------------------------------------------------
-#' @include ClusterModelNames.R IClusterModel.R
+#' @include global.R ClusterModelNames.R IClusterModel.R
 NULL
 
 #-----------------------------------------------------------------------
@@ -44,7 +44,7 @@ NULL
 #' the strategy to run. [\code{\link{clusterStrategy}}]() method by default.
 #' @param criterion character defining the criterion to select the best model.
 #' The best model is the one with the lowest criterion value.
-#' Possible values: "BIC", "AIC", "ICL". Default is "ICL".
+#' Possible values: "BIC", "AIC", "ICL", "ML". Default is "ICL".
 #' @param nbCore integer defining the number of processor to use (default is 1, 0 for all).
 #'
 #' @examples
@@ -75,11 +75,11 @@ NULL
 #'
 #' @return An instance of the [\code{\linkS4class{ClusterGamma}}] class.
 #' @author Serge Iovleff
-#' @export
+#'
 #'
 clusterGamma <- function( data, nbCluster=2
                         , models= "gamma_pk_ajk_bjk"
-                        , strategy=clusterFastStrategy()
+                        , strategy=clusterStrategy()
                         , criterion="ICL"
                         , nbCore = 1)
 {
@@ -110,9 +110,10 @@ clusterGamma <- function( data, nbCluster=2
   # Create model
   model = new("ClusterGamma", data)
   model@strategy = strategy;
-
+  model@criterionName = criterion
+  
   # start estimation of the models
-  resFlag = .Call("clusterMixture", model, nbCluster, models, strategy, criterion, nbCore, PACKAGE="MixAll")
+  resFlag = .Call("clusterMixture", model, nbCluster, models, nbCore, PACKAGE="MixAll")
 
   # set names
   if (resFlag != 1) {cat("WARNING: An error occur during the clustering process")}
@@ -140,10 +141,9 @@ clusterGamma <- function( data, nbCluster=2
 #' @name ClusterGammaComponent
 #' @rdname ClusterGammaComponent-class
 #' @aliases ClusterGammaComponent-class
-#' @exportClass ClusterGammaComponent
 #'
 setClass(
-    Class="ClusterGammaComponent",
+    Class = "ClusterGammaComponent",
     representation( shape = "matrix", scale = "matrix"),
     contains=c("IClusterComponent"),
     validity=function(object)
@@ -221,8 +221,15 @@ setMethod(
   signature=c("ClusterGammaComponent"),
   function(x,k,...)
   {
-    cat("* Shapes     = ", format(x@shape[k,]), "\n")
-    cat("* Scales     = ", format(x@scale[k,]), "\n")
+    if(missing(k))
+    {
+      callNextMethod()
+    }
+    else
+    {
+      cat("* Shapes     = ", format(x@shape[k,]), "\n")
+      cat("* Scales     = ", format(x@scale[k,]), "\n")
+    }
   }
 )
 
@@ -233,8 +240,7 @@ setMethod(
   signature=c("ClusterGammaComponent"),
   function(object)
   {
-    cat("* Shapes     = ", format(object@shape), "\n")
-    cat("* Scales     = ", format(object@scale), "\n")
+    callNextMethod()
   }
 )
 
@@ -265,10 +271,9 @@ setMethod(
 #' @name ClusterGamma
 #' @rdname ClusterGamma-class
 #' @aliases ClusterGamma-class
-#' @exportClass ClusterGamma
 #'
 setClass(
-    Class="ClusterGamma",
+    Class = "ClusterGamma",
     representation( component = "ClusterGammaComponent"),
     contains=c("IClusterModel"),
     validity=function(object)
@@ -319,6 +324,7 @@ setMethod(
   signature=c("ClusterGamma"),
   function(x,...){
     cat("****************************************\n")
+    print(x@component)
     callNextMethod();
     cat("****************************************\n")
     for(k in 1:length(x@pk))
@@ -339,8 +345,8 @@ setMethod(
   function(object)
   {
     cat("****************************************\n")
+    show(object@component)
     callNextMethod();
-    show(object@component);
     cat("****************************************\n")
     for(k in 1:length(object@pk))
     {
@@ -360,77 +366,12 @@ setMethod(
   signature=c("ClusterGamma"),
   function(object, ...)
   {
-    cat("**************************************************************\n")
+    cat("****************************************\n")
+    cat("* model name     =",object@component@modelName,"\n")
     callNextMethod()
-    summary(object@component);
-    cat("**************************************************************\n")
+    cat("****************************************\n")
   }
 )
-
-## #-----------------------------------------------------------------------
-## #' Definition of the [\code{\linkS4class{PredictGamma}}] class
-## #'
-## #' This class defines a predictor for diagonal Gaussian mixture Model.
-## #'
-## #' @slot model  A valid [\code{\linkS4class{ClusterDiagGaussian}}] class.
-## #' @slot data   A matrix with the data to predict.
-## #' @seealso [\code{\linkS4class{IClusterModel}}] class
-## #'
-## #' @examples
-## #' getSlots("PredictGamma")
-## #'
-## #' @author Serge Iovleff
-## #'
-## #' @name PredictGamma
-## #' @rdname PredictGamma-class
-## #' @aliases PredictGamma-class
-## #' @exportClass PredictGamma
-## #'
-## setClass(
-##     Class="PredictGamma",
-##     representation( model = "ClusterGamma", data = "matrix"),
-##     contains=c("IClusterPredict"),
-##     validity=function(object)
-##     {
-##       # check model
-##       if(class(object@model)[1] != "ClusterGamma")
-##       { stop("model must be an instance of ClusterGamma.")}
-##       if (!validObject(object@model)) {stop("model is not valid.")}
-##       # check data
-##       if (ncol(object@model@component@data)!= ncol(object@data))
-##       {stop("data must have the same number of column.")}
-##       return(TRUE)
-##     }
-## )
-## 
-## #' Initialize an instance of a MixAll S4 class.
-## #'
-## #' Initialization method of the [\code{\linkS4class{PredictGamma}}] class.
-## #' Used internally in the 'MixAll' package.
-## #'
-## #' @rdname initialize-methods
-## #' @keywords internal
-## setMethod(
-##     f="initialize",
-##     signature=c("PredictGamma"),
-##     definition=function(.Object, model, data)
-##     {
-##       # check model
-##       if(missing(model)) {stop("model is mandatory in PredictGamma.")}
-##       if(class(model)[1] != "ClusterDiagGaussian")
-##       { stop("model must be an instance of ClusterGamma.")}
-##       # for data
-##       if(missing(data)) {stop("data is mandatory in PredictGamma.")}
-##       # create slots
-##       .Object@model <- model
-##       .Object@data <- as.matrix(data, ncol= ncol(model@component@data))
-##       # validate
-##       .Object <- callNextMethod(.Object, nrow(.Object@data), .Object@model@nbCluster);
-##       validObject(.Object)
-##       return(.Object)
-##     }
-## )
-
 #' Plotting of a class [\code{\linkS4class{ClusterGamma}}]
 #'
 #' Plotting data from a [\code{\linkS4class{ClusterGamma}}] object
@@ -441,11 +382,10 @@ setMethod(
 #' If missingValues all the variables are represented.
 #' @param ... further arguments passed to or from other methods
 #'
-#' @importFrom graphics plot
 #' @aliases plot-ClusterGamma, ClusterGamma-method
 #' @docType methods
 #' @rdname plot-ClusterGamma-method
-#' @export
+#'
 #'
 #' @seealso \code{\link{plot}}
 #' @examples
