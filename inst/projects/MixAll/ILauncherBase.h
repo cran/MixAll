@@ -47,7 +47,6 @@ namespace STK
 class ILauncherBase: public IRunnerBase
 {
   public:
-    typedef IMixtureManager<RDataHandler> IManager;
     /** constructor with a list of component.
      *  @param model a reference on the current model
      **/
@@ -58,18 +57,45 @@ class ILauncherBase: public IRunnerBase
     inline Rcpp::S4 const& s4_model() const { return s4_model_;}
 
   protected:
-    /** get the parameters of a component given by its ID
+    /** model from the R side */
+    Rcpp::S4 s4_model_;
+
+    /** data handler */
+    RDataHandler handler_;
+    /** kernel handler */
+    KernelHandler kerHandler_;
+
+    /** diagonal Gaussian mixture models manager */
+    DiagGaussianMixtureManager<RDataHandler> diagGaussianManager_;
+    /** Poisson mixture models manager */
+    PoissonMixtureManager<RDataHandler> poissonManager_;
+    /** gamma mixture models manager */
+    GammaMixtureManager<RDataHandler> gammaManager_;
+    /** categorical mixture models manager */
+    CategoricalMixtureManager<RDataHandler> categoricalManager_;
+    /** categorical mixture models manager */
+    KernelMixtureManager kernelManager_;
+
+    /** set parameters @c param to component identified by idData to the mixture model */
+    bool setParameters( IMixtureStatModel* p_model, String const& idData, ArrayXX const& param);
+    /** set parameters @c param to diagGaussian component identified by idData to the mixture model */
+    void setDiagGaussianParameters( IMixtureStatModel* p_model, String const& idData, ArrayXX const& param);
+    /** set parameters @c param to Poisson component identified by idData to the mixture model */
+    void setPoissonParameters( IMixtureStatModel* p_model, String const& idData, ArrayXX const& param);
+    /** set parameters @c param to gamma component identified by idData to the mixture model */
+    void setGammaParameters( IMixtureStatModel* p_model, String const& idData, ArrayXX const& param);
+    /** set parameters @c param to Categorical component identified by idData to the mixture model */
+    void setCategoricalParameters( IMixtureStatModel* p_model, String const& idData, ArrayXX const& param);
+    /** set parameters @c param to KMM component identified by idData to the mixture model */
+    void setKmmParameters( IMixtureStatModel* p_model, String const& idData, ArrayXX const& param);
+
+    /** set the parameters of a component given by its ID using defined Mixture manager
      *  @param p_model model with the parameters to get
-     *  @param manager mixture manager
      *  @param idData ID of the data
      *  @param s4_component component storing the parameters
      **/
-    void setParametersToComponent( IMixtureStatModel* p_model
-                                 , IManager const& manager
-                                 , std::string const& idData
-                                 , Rcpp::S4 s4_component
-                                 );
-    /** get the parameters of a component given by its ID
+    void setParametersToComponent(IMixtureStatModel* p_model, String const& idData, Rcpp::S4 s4_component);
+    /** set the parameters to a component given by its ID
      *  @param p_model model with the parameters to get
      *  @param manager mixture manager
      *  @param idData ID of the data
@@ -77,110 +103,134 @@ class ILauncherBase: public IRunnerBase
      **/
     void setParametersToComponent( IMixtureStatModel* p_model
                                  , KernelMixtureManager const& manager
-                                 , std::string const& idData
+                                 , String const& idData
                                  , Rcpp::S4 s4_component
                                  );
     /** set diagonal Gaussian parameters and data to S4 component
      *  @param p_model model with the parameters to get
-     *  @param manager mixture manager
      *  @param idData ID of the data
      *  @param s4_component component storing the parameters
      * */
     void setDiagGaussianParametersToComponent( IMixtureStatModel* p_model
-                                             , IManager const& manager
-                                             , std::string const& idData
+                                             , String const& idData
                                              , Rcpp::S4 s4_component
                                              );
-    /** get Poisson parameters
+    /** set Poisson parameters
      *  @param p_model model with the parameters to get
      *  @param manager mixture manager
      *  @param idData ID of the data
      *  @param s4_component component storing the parameters
      * */
     void setPoissonParametersToComponent( IMixtureStatModel* p_model
-                                        , IManager const& manager
-                                        , std::string const& idData
+                                        , String const& idData
                                         , Rcpp::S4 s4_component
                                         );
-    /** get gamma parameters
+    /** set gamma parameters
      *  @param p_model model with the parameters to get
      *  @param manager mixture manager
      *  @param idData ID of the data
      *  @param s4_component component storing the parameters
      *  */
     void setGammaParametersToComponent( IMixtureStatModel* p_model
-                                      , IManager const& manager
-                                      , std::string const& idData
+                                      , String const& idData
                                       , Rcpp::S4 s4_component
                                       );
-    /** get categorical parameters
+    /** set categorical parameters
      *  @param p_model model with the parameters to get
      *  @param manager mixture manager
      *  @param idData ID of the data
      *  @param s4_component component storing the parameters
      * */
     void setCategoricalParametersToComponent( IMixtureStatModel* p_model
-                                            , IManager const& manager
-                                            , std::string const& idData
+                                            , String const& idData
                                             , Rcpp::S4 s4_component
                                             );
-    /** get kernel parameters
+    /** set kernel parameters
      *  @param p_model model with the parameters to get
-     *  @param manager mixture manager
      *  @param idData ID of the data
      *  @param s4_component component storing the parameters
      * */
     void setKernelParametersToComponent( IMixtureStatModel* p_model
-                                       , KernelMixtureManager const& manager
-                                       , std::string const& idData
+                                       , String const& idData
                                        , Rcpp::S4 s4_component
                                        );
+
+    /** set (estimated) missing values to a R matrix
+     *  @param p_model model with the missing values
+     *  @param idData ID of the data
+     *  @param data data set with missing values to set
+     **/
+    template< typename Type>
+    void setMissingValuesToMatrix( IMixtureStatModel* p_model
+                                 , String const& idData
+                                 , RMatrix<Type>& data);
+    /** set (estimated) missing values by Diagonal Gaussian model to a R matrix
+     *  @param p_model model with the missing values
+     *  @param idData ID of the data
+     *  @param data data set with missing values to set
+     **/
+    void setDiagGaussianMissingValuesToMatrix( IMixtureStatModel* p_model
+                                             , String const& idData
+                                             , RMatrix<Real>& data
+                                             );
+    /** set (estimated) missing values by Poisson model to a R matrix
+     *  @param p_model model with the missing values
+     *  @param idData ID of the data
+     *  @param data data set with missing values to set
+     **/
+    void setPoissonMissingValuesToMatrix( IMixtureStatModel* p_model
+                                        , String const& idData
+                                        , RMatrix<Integer>& data
+                                        );
+    /** set (estimated) missing values by Gamma model to a R matrix
+     *  @param p_model model with the missing values
+     *  @param idData ID of the data
+     *  @param data data set with missing values to set
+     **/
+    void setGammaMissingValuesToMatrix( IMixtureStatModel* p_model
+                                      , String const& idData
+                                      , RMatrix<Real>& data
+                                      );
+    /** set (estimated) missing values by Categorical model to a R matrix
+     *  @param p_model model with the missing values
+     *  @param idData ID of the data
+     *  @param data data set with missing values to set
+     **/
+    void setCategoricalMissingValuesToMatrix( IMixtureStatModel* p_model
+                                            , String const& idData
+                                            , RMatrix<Integer>& data
+                                            );
 
     /** get parameters of a component given by its ID
      *  @param s4_component the component with the parameters to get
      *  @param idData ID of the data
      **/
-    ArrayXX getParameters( Rcpp::S4 s4_component
-                         , std::string const& idData
-                         );
+    ArrayXX getParameters( String const& idData, Rcpp::S4 s4_component);
     /** get diagonal Gaussian parameters
      *  @param s4_component the component with the parameters to get
      *  @param idData ID of the data
      * */
-    ArrayXX getDiagGaussianParameters( Rcpp::S4 s4_component
-                                     , std::string const& idData
-                                     );
+    ArrayXX getDiagGaussianParameters( String const& idData, Rcpp::S4 s4_component);
     /** get Poisson parameters
      *  @param s4_component the component with the parameters to get
      *  @param idData ID of the data
      * */
-    ArrayXX getPoissonParameters( Rcpp::S4 s4_component
-                                , std::string const& idData
-                                );
+    ArrayXX getPoissonParameters( String const& idData, Rcpp::S4 s4_component);
     /** get gamma parameters
      *  @param s4_component the component with the parameters to get
      *  @param idData ID of the data
      *  */
-    ArrayXX getGammaParameters( Rcpp::S4 s4_component
-                              , std::string const& idData
-                              );
+    ArrayXX getGammaParameters( String const& idData, Rcpp::S4 s4_component);
     /** get categorical parameters
      *  @param s4_component the component with the parameters to get
      *  @param idData ID of the data
      * */
-    ArrayXX getCategoricalParameters( Rcpp::S4 s4_component
-                                    , std::string const& idData
-                                    );
+    ArrayXX getCategoricalParameters( String const& idData, Rcpp::S4 s4_component);
     /** get kernel parameters
      *  @param s4_component the component with the parameters to get
      *  @param idData ID of the data
      * */
-    ArrayXX getKernelParameters( Rcpp::S4 s4_component
-                               , std::string const& idData
-                               );
-
-    /** model from the R side */
-    Rcpp::S4 s4_model_;
+    ArrayXX getKernelParameters( String const& idData, Rcpp::S4 s4_component);
 
 };
 

@@ -47,7 +47,7 @@ namespace STK
 LearnLauncher::LearnLauncher( Rcpp::S4 model, Rcpp::CharacterVector models, Rcpp::S4 algo )
                             : ILauncher(model, models)
                             , s4_algo_(algo)
-                            , criterion_(Rcpp::as<std::string>(s4_model_.slot("criterionName")))
+                            , criterion_(Rcpp::as<String>(s4_model_.slot("criterionName")))
                             , p_algo_(0)
                             , p_criterion_(0)
                             , p_learner_(0)
@@ -61,7 +61,7 @@ LearnLauncher::LearnLauncher( Rcpp::S4 model, Rcpp::CharacterVector models, Rcpp
 LearnLauncher::LearnLauncher( Rcpp::S4 model, Rcpp::S4 algo )
                             : ILauncher(model)
                             , s4_algo_(algo)
-                            , criterion_(Rcpp::as<std::string>(s4_model_.slot("criterionName")))
+                            , criterion_(Rcpp::as<String>(s4_model_.slot("criterionName")))
                             , p_algo_(0)
                             , p_criterion_(0)
                             , p_learner_(0)
@@ -85,9 +85,9 @@ bool LearnLauncher::run()
     return false;
   }
   // create algo runner
-  std::string algoName = s4_algo_.slot("algo");
-  STK::Real epsilon    = s4_algo_.slot("epsilon");
-  int nbIter           = s4_algo_.slot("nbIteration");
+  String algoName = s4_algo_.slot("algo");
+  Real epsilon    = s4_algo_.slot("epsilon");
+  int nbIter      = s4_algo_.slot("nbIteration");
   if (toUpperString(algoName) == "SIMUL")  { p_algo_ = new SimulAlgo();}
   else if (toUpperString(algoName) == "IMPUTE") { p_algo_ = new ImputeAlgo();}
     else
@@ -100,18 +100,24 @@ bool LearnLauncher::run()
   Real initCriter = s4_model_.slot("criterion");
   Real criter = (isMixedData_) ? selectBestMixedModel()
                                : selectBestSingleModel();
+
   // release criterion and algo,
   delete p_criterion_; p_criterion_ = 0;
   delete p_algo_; p_algo_ = 0;
+  if (!Arithmetic<Real>::isFinite(criter)) return false;
 
   // get result common part of the estimated model
   s4_model_.slot("criterion")       = criter;
   s4_model_.slot("lnLikelihood")    = p_learner_->lnLikelihood();
   s4_model_.slot("nbFreeParameter") = p_learner_->nbFreeParameter();
-
+  // get zi with predictions
+  RVector<int> ziFit = (SEXP)s4_model_.slot("ziFit");
+  ziFit = p_learner_->ziPred();
+   // compute lnFi
   NumericVector fi = s4_model_.slot("lnFi");
   for (int i=0; i< fi.length(); ++i)
   { fi[i] = p_learner_->computeLnLikelihood(i);}
+  // results
   if (criter == initCriter || !Arithmetic<Real>::isFinite(criter)) return false;
   return true;
 }
@@ -119,7 +125,7 @@ bool LearnLauncher::run()
 /* get the parameters */
 Real LearnLauncher::selectBestSingleModel()
 {
-  std::string idDataBestModel;
+  String idDataBestModel;
   // component
   Rcpp::S4 s4_component = s4_model_.slot("component");
 
@@ -138,8 +144,8 @@ Real LearnLauncher::selectBestSingleModel()
   for (int l=0; l <v_models_.size(); ++l)
   {
     // create idData
-    std::string idData  = "model" + typeToString<int>(l);
-    std::string idModel = Rcpp::as<std::string>(v_models_[l]);
+    String idData  = "model" + typeToString<int>(l);
+    String idModel = Rcpp::as<String>(v_models_[l]);
     // transform R model names to STK++ model names
     // check have been done on the R side so.... Let's go
     bool freeProp;
@@ -161,10 +167,8 @@ Real LearnLauncher::selectBestSingleModel()
     // loop over all the models
     for (int l=0; l <v_models_.size(); ++l)
     {
-      std::string idData = "model" + typeToString<int>(l);
-      std::string idModel = Rcpp::as<std::string>(v_models_[l]);
-      bool freeProp;
-      Clust::Mixture model = Clust::stringToMixture(idModel, freeProp);
+      String idData = "model" + typeToString<int>(l);
+      String idModel = Rcpp::as<String>(v_models_[l]);
       // create learner and mixtures
       p_current = new MixtureLearner(nbSample, K);
       p_current->setMixtureParameters(tik, pk);
@@ -189,7 +193,7 @@ Real LearnLauncher::selectBestSingleModel()
       }
     }
     // get specific parameters
-    getParameters(p_learner_, idDataBestModel, s4_component);
+    setParametersToComponent(p_learner_, idDataBestModel, s4_component);
     return critValue;
   }
   catch (Exception const& e)
@@ -224,8 +228,8 @@ Real LearnLauncher::selectBestMixedModel()
     {
       // component
       Rcpp::S4 s4_component = s4_list[l];
-      std::string idData  = "model" + typeToString<int>(l);
-      std::string idModel = s4_component.slot("modelName");
+      String idData  = "model" + typeToString<int>(l);
+      String idModel = s4_component.slot("modelName");
       // register
       bool freeMixture;
       Clust::Mixture model           = Clust::stringToMixture(idModel, freeMixture);
@@ -273,8 +277,8 @@ Real LearnLauncher::selectBestMixedModel()
       // component
       Rcpp::S4 s4_component = s4_list[l];
       // id of the data set and of the model
-      std::string idData  = "model" + typeToString<int>(l);
-      getParameters(p_learner_, idData, s4_component);
+      String idData  = "model" + typeToString<int>(l);
+      setParametersToComponent(p_learner_, idData, s4_component);
     }
     //
     return criter;

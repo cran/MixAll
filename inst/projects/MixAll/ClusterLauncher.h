@@ -49,7 +49,7 @@ class ClusterLauncher: public ILauncher
 {
   public:
     /** constructor.
-     * @param model a reference on the current model
+     *  @param model a reference on the current model
      *  @param nbCluster a vector with the number of clusters to test
      *  @param models a vector of string with the model names to test
      **/
@@ -72,7 +72,7 @@ class ClusterLauncher: public ILauncher
     /** vector with the number of cluster to try */
     Rcpp::IntegerVector   v_nbCluster_;
     /** character string with the model selection criterion name */
-    std::string           criterion_;
+    String           criterion_;
 
   private:
     /** Select the best model among the models and nbCluster given.

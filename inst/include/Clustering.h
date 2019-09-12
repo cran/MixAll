@@ -80,7 +80,6 @@
 #include <Clustering/include/MixtureInit/STK_MixtureInit.h>
 
 #include <Clustering/include/STK_MixtureComposer.h>
-#include <Clustering/include/STK_MixtureComposerFacade.h>
 #include <Clustering/include/STK_MixtureLearner.h>
 #include <Clustering/include/STK_MixtureSemiLearner.h>
 #include <Clustering/include/STK_MixtureFacade.h>
@@ -88,11 +87,13 @@
 #include <Clustering/include/CategoricalModels/STK_Categorical_pjk.h>
 #include <Clustering/include/CategoricalModels/STK_Categorical_pk.h>
 #include <Clustering/include/CategoricalModels/STK_CategoricalMixtureManager.h>
+
 #include <Clustering/include/DiagGaussianModels/STK_DiagGaussian_s.h>
 #include <Clustering/include/DiagGaussianModels/STK_DiagGaussian_sj.h>
-#include <Clustering/include/DiagGaussianModels/STK_DiagGaussian_sjk.h>
+#include <Clustering/include/DiagGaussianModels/STK_DiagGaussian_sjsk.h>
 #include <Clustering/include/DiagGaussianModels/STK_DiagGaussian_sk.h>
 #include <Clustering/include/DiagGaussianModels/STK_DiagGaussianMixtureManager.h>
+
 #include <Clustering/include/GammaModels/STK_Gamma_a_bjk.h>
 #include <Clustering/include/GammaModels/STK_Gamma_a_bk.h>
 #include <Clustering/include/GammaModels/STK_Gamma_aj_bjk.h>
@@ -106,9 +107,11 @@
 #include <Clustering/include/GammaModels/STK_Gamma_ak_bjk.h>
 #include <Clustering/include/GammaModels/STK_Gamma_ak_bk.h>
 #include <Clustering/include/GammaModels/STK_GammaMixtureManager.h>
+
 #include <Clustering/include/KernelModels/STK_Kmm_s.h>
 #include <Clustering/include/KernelModels/STK_Kmm_sk.h>
 #include <Clustering/include/KernelModels/STK_KernelMixtureManager.h>
+
 #include <Clustering/include/PoissonModels/STK_Poisson_ljk.h>
 #include <Clustering/include/PoissonModels/STK_Poisson_ljlk.h>
 #include <Clustering/include/PoissonModels/STK_Poisson_lk.h>
