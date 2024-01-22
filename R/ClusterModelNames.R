@@ -30,9 +30,9 @@ NULL
 #' matrices are diagonal in each cluster. Assumptions on the proportions
 #' and standard deviations give rise to 8 models:
 #' \enumerate{
-#'  \item {The proportions can be equal or free.}
-#'  \item {The standard deviations can be equal or free for all the variables.}
-#'  \item {The standard deviations can be equal or free for all the clusters.}
+#'  \item The proportions can be equal or free
+#'  \item The standard deviations can be equal or free for all the variables
+#'  \item The standard deviations can be equal or free for all the clusters
 #' }
 #'
 #' The model names are summarized in the following array:
@@ -117,11 +117,11 @@ clusterValidDiagGaussianNames <- function(names)
 #'
 #' This gives rise to 24 models:
 #' \enumerate{
-#'  \item {The proportions can be equal or free.}
-#'  \item {The shapes can be equal or free in each clusters.}
-#'  \item {The shapes can be equal or free between all clusters.}
-#'  \item {The scales can be equal or free for each clusters.}
-#'  \item {The scales can be equal or free between all clusters.}
+#'  \item The proportions can be equal or free
+#'  \item The shapes can be equal or free in each clusters
+#'  \item The shapes can be equal or free between all clusters
+#'  \item The scales can be equal or free for each clusters
+#'  \item The scales can be equal or free between all clusters
 #' }
 #'
 #' The model names are summarized in the following array:
@@ -267,8 +267,8 @@ clusterValidGammaNames <- function(names)
 #'
 #' In a Categorical mixture model, we can build 4 models:
 #' \enumerate{
-#'  \item {The proportions can be equal or free.}
-#'  \item {The probabilities can be equal or free for all the variables.}
+#'  \item The proportions can be equal or free
+#'  \item The probabilities can be equal or free for all the variables
 #' }
 #'
 #' The model names are summarized in the following array:
@@ -331,8 +331,8 @@ clusterValidCategoricalNames <- function(names)
 #'
 #' In a Poisson mixture model, we can build 4 models:
 #' \enumerate{
-#'  \item {The proportions can be equal or free.}
-#'  \item {The means can be equal, free or proportional for all the variables.}
+#'  \item The proportions can be equal or free
+#'  \item The means can be equal, free or proportional for all the variables
 #' }
 #'
 #' The model names are summarized in the following array:

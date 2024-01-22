@@ -44,11 +44,10 @@
 #'    \item Prediction (\link{clusterPredict}).
 #'  }
 #'
-#' @name MixAll-package
-#' @rdname MixAll-package
 #' @docType package
 #' @author Serge Iovleff
-NULL
+"_PACKAGE"
+
 
 #' Counting Data: DebTrivedi
 #'
@@ -61,7 +60,7 @@ NULL
 #' together with Zeileis (2006). The objective is to model the demand for medical
 #' care -as captured by the number of physician/non-physician office and hospital
 #' outpatient visits- by the covariates available for the patients.
-#' @source \url{http://www.jstatsoft.org/v27/i08/paper}
+#' @source \url{https://www.jstatsoft.org/htaccess.php?volume=27&type=i&issue=08&filename=paper}
 #' @references
 #' Zeileis, A. and Kleiber, C. and Jackma, S. (2008). "Regression Models for Count Data in R". JSS 27, 8, 1--25.
 #' @name DebTrivedi
@@ -132,7 +131,7 @@ NULL
 #'   \item{\code{Waiting.Time}}{a numeric vector containing the waiting time (in minutes) to the next eruption}
 #' }
 #'
-#' @source \url{http://www.geyserstudy.org/geyser.aspx?pGeyserNo=OLDFAITHFUL}
+#' @source \url{https://web.archive.org/web/20191110083004/http://www.geyserstudy.org/geyser.aspx?pGeyserNo=OLDFAITHFUL}
 #'
 #' @references
 #' Hardle, W. (1991). "Smoothing Techniques with Implementation in S". Springer-Verlag, New York.
@@ -268,8 +267,6 @@ NULL
 #'
 #'
 #' @name HeartDisease.cat
-#' @name HeartDisease.cont
-#' @name HeartDisease.target
 #' @aliases HeartDisease HeartDisease.cat HeartDisease.cont HeartDisease.target
 #' @rdname HeartDisease
 #' @docType data

@@ -33,9 +33,10 @@
  **/
 
 
-#include "RTKpp.h"
-#include "MixAll.h"
-#include <MixAll/LearnLauncher.h>
+#include <RTKpp.h>
+
+#include <MixAll.h>
+#include <MixAll/include/LearnLauncher.h>
 
 
 /*

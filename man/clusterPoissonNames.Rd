@@ -22,8 +22,8 @@ A vector of character with the model names.
 \description{
 In a Poisson mixture model, we can build 4 models:
 \enumerate{
- \item {The proportions can be equal or free.}
- \item {The means can be equal, free or proportional for all the variables.}
+ \item The proportions can be equal or free
+ \item The means can be equal, free or proportional for all the variables
 }
 }
 \details{

@@ -34,7 +34,9 @@
 
 
 #include <Analysis/include/STK_Const_Math.h>
+
 #include <Clustering/include/KernelModels/STK_Kmm_s.h>
+
 #include <STatistiK/include/STK_Law_Normal.h>
 #include <STatistiK/include/STK_Stat_Functors.h>
 

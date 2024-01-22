@@ -28,11 +28,11 @@
  * Author:   iovleff, serge.iovleff@stkpp.org
  **/
 
-/** @file STK_MixtureFacade.cpp
+/** @file ClusterFacade.cpp
  *  @brief In this file we implement the ClusterFacade class.
  **/
 
-#include <MixAll/ClusterFacade.h>
+#include <MixAll/include/ClusterFacade.h>
 
 namespace STK
 {

@@ -4,8 +4,14 @@
 \alias{kmmMixedData}
 \title{Create an instance of the [\code{\linkS4class{KmmMixedDataModel}}] class}
 \usage{
-kmmMixedData(ldata, lmodels, nbCluster = 2,
-  strategy = clusterStrategy(), criterion = "ICL", nbCore = 1)
+kmmMixedData(
+  ldata,
+  lmodels,
+  nbCluster = 2,
+  strategy = clusterStrategy(),
+  criterion = "ICL",
+  nbCore = 1
+)
 }
 \arguments{
 \item{ldata}{[\code{list}] containing the data sets (matrices and/or data.frames).}

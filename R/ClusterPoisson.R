@@ -108,7 +108,7 @@ clusterPoisson <- function( data, nbCluster=2
   model = new("ClusterPoisson", data)
   model@strategy = strategy;
   model@criterionName = criterion
-  
+
   # start estimation of the models
   resFlag = .Call("clusterMixture", model, nbCluster, models, nbCore, PACKAGE="MixAll")
 

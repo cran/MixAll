@@ -5,8 +5,11 @@
 \alias{clusterValidDiagGaussianNames}
 \title{Create a vector of diagonal Gaussian mixture model names.}
 \usage{
-clusterDiagGaussianNames(prop = "all", sdInCluster = "all",
-  sdBetweenCluster = "all")
+clusterDiagGaussianNames(
+  prop = "all",
+  sdInCluster = "all",
+  sdBetweenCluster = "all"
+)
 
 clusterValidDiagGaussianNames(names)
 }
@@ -27,9 +30,9 @@ In a diagonal Gaussian mixture model, we assume that the variance
 matrices are diagonal in each cluster. Assumptions on the proportions
 and standard deviations give rise to 8 models:
 \enumerate{
- \item {The proportions can be equal or free.}
- \item {The standard deviations can be equal or free for all the variables.}
- \item {The standard deviations can be equal or free for all the clusters.}
+ \item The proportions can be equal or free
+ \item The standard deviations can be equal or free for all the variables
+ \item The standard deviations can be equal or free for all the clusters
 }
 }
 \details{

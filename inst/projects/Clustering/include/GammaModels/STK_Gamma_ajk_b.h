@@ -76,7 +76,7 @@ class Gamma_ajk_b: public GammaBase<Gamma_ajk_b<Array> >
   public:
     typedef GammaBase<Gamma_ajk_b<Array> > Base;
     using Base::param_;
-    
+
     using Base::p_data;
     using Base::meanjk;
     using Base::variancejk;
@@ -105,7 +105,7 @@ class Gamma_ajk_b: public GammaBase<Gamma_ajk_b<Array> >
  *  will be set to 1.
  */
 template<class Array>
-void Gamma_ajk_b<Array>::randomInit( CArrayXX const* const& p_tik, CPointX const* const& p_tk) 
+void Gamma_ajk_b<Array>::randomInit( CArrayXX const* const& p_tik, CPointX const* const& p_tk)
 {
   // compute moments
   this->moments(p_tik);
@@ -128,9 +128,10 @@ void Gamma_ajk_b<Array>::randomInit( CArrayXX const* const& p_tik, CPointX const
 
 /* Compute the weighted mean and the common variance. */
 template<class Array>
-bool Gamma_ajk_b<Array>::run( CArrayXX const* const& p_tik, CPointX const* const& p_tk) 
+bool Gamma_ajk_b<Array>::run( CArrayXX const* const& p_tik, CPointX const* const& p_tk)
 {
-  if (!this->moments(p_tik)) { return false;}
+  bool flag = true;
+  if (!this->moments(p_tik)) { flag = false;}
   // start estimations of the ajk and bj
   Real qvalue = this->qValue(p_tik, p_tk);
   int iter;
@@ -147,6 +148,8 @@ bool Gamma_ajk_b<Array>::run( CArrayXX const* const& p_tik, CPointX const* const
         if ((x0 <=0.) || !Arithmetic<Real>::isFinite(x0)) return false;
         // compute shape
         hidden::invPsi f(param_.meanLog_[k][j] - std::log(param_.scale_));
+
+
         Real a =  Algo::findZero(f, x0, x1, TOL);
 
         if (!Arithmetic<Real>::isFinite(a))
@@ -193,7 +196,7 @@ bool Gamma_ajk_b<Array>::run( CArrayXX const* const& p_tik, CPointX const* const
     stk_cout << _T("qvalue =") << qvalue << _T("\n");
   }
 #endif
-  return true;
+  return flag;
 }
 
 } // namespace STK

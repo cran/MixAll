@@ -29,13 +29,13 @@
 #' \itemize{
 #'        \item Algorithms:
 #'           \itemize{
-#'               \item \code{Impute} {Impute the missing values during the iterations}
-#'               \item \code{Simul} {Simulate the missing values during the iterations}
+#'               \item \code{Impute}: Impute the missing values during the iterations
+#'               \item \code{Simul}: Simulate the missing values during the iterations
 #'           }
 #'        \item Stopping rules:
 #'           \itemize{
-#'               \item \code{nbIteration} {Set the maximum number of iterations.}
-#'               \item \code{epsilon} {Set relative increase of the log-likelihood criterion.}
+#'               \item \code{nbIteration}: Set the maximum number of iterations
+#'               \item \code{epsilon}: Set relative increase of the log-likelihood criterion
 #'           }
 #'        \item Default values are \eqn{200} \code{nbIteration} of \code{Simul}.
 #' }

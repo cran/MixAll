@@ -33,8 +33,7 @@ NULL
 #' \itemize{
 #'   \item \code{nbShortRun} short iterations of the initialization step and
 #'    of the \code{EM}, \code{CEM}, \code{SEM} or \code{SemiSEM} algorithm.
-#'   \item \code{nbInit} initializations using the [\code{\link{clusterInit}}]
-#'   method.
+#'   \item \code{nbInit} initializations using the [\code{\link{clusterInit}}] method.
 #'   \item A long run of the \code{EM}, \code{CEM}, \code{SEM} or \code{SemiSEM} algorithm.
 #' }
 #' For example if \code{nbInit} is 5 and \code{nbShortRun} is also 5, there will

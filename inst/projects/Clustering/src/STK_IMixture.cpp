@@ -35,8 +35,8 @@
  * composer.
  */
 
-#include "../include/STK_IMixture.h"
-#include "../include/STK_IMixtureStatModel.h"
+#include <Clustering/include/STK_IMixture.h>
+#include <Clustering/include/STK_IMixtureStatModel.h>
 
 namespace STK
 {

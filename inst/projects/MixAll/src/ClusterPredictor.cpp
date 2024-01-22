@@ -32,7 +32,7 @@
  **/
 
 
-#include "../inst/projects/MixAll/ClusterPredictor.h"
+#include <MixAll/include/ClusterPredictor.h>
 
 namespace STK
 {

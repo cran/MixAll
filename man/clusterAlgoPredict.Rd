@@ -4,8 +4,12 @@
 \alias{clusterAlgoPredict}
 \title{Create an instance of the [\code{\linkS4class{ClusterAlgoPredict}}] class}
 \usage{
-clusterAlgoPredict(algo = "EM", nbIterBurn = 50, nbIterLong = 100,
-  epsilon = 1e-07)
+clusterAlgoPredict(
+  algo = "EM",
+  nbIterBurn = 50,
+  nbIterLong = 100,
+  epsilon = 1e-07
+)
 }
 \arguments{
 \item{algo}{character string with the second stage estimation algorithm.

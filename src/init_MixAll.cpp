@@ -1,13 +1,22 @@
 // RegisteringDynamic Symbols
 
-#include <R.h>
-#include <Rinternals.h>
-#include <R_ext/Rdynload.h>
-
 #include <stdlib.h> // for NULL
+
+#include <R_ext/Rdynload.h>
+#include <R_ext/Visibility.h>  // optional
+
+// used before version 4.3 of rtools
+//#include <R.h>
+//#include <Rinternals.h>
+//#include <R_ext/Rdynload.h>
 
 // all MixAll method that can be used from R are defined there
 #include "../inst/include/MixAll.h"
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 // declare functions
 static const R_CallMethodDef callMethods[]  =
@@ -35,3 +44,8 @@ void R_init_myRoutines(DllInfo *info)
 	R_registerRoutines(info, NULL, callMethods, NULL, NULL);
 	R_useDynamicSymbols(info, FALSE);
 }
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
+

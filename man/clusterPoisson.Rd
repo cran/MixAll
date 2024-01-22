@@ -4,8 +4,14 @@
 \alias{clusterPoisson}
 \title{Create an instance of the [\code{\linkS4class{ClusterPoisson}}] class}
 \usage{
-clusterPoisson(data, nbCluster = 2, models = clusterPoissonNames(),
-  strategy = clusterStrategy(), criterion = "ICL", nbCore = 1)
+clusterPoisson(
+  data,
+  nbCluster = 2,
+  models = clusterPoissonNames(),
+  strategy = clusterStrategy(),
+  criterion = "ICL",
+  nbCore = 1
+)
 }
 \arguments{
 \item{data}{a data.frame or matrix containing the data. Rows correspond to observations

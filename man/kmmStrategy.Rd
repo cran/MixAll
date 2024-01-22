@@ -4,11 +4,21 @@
 \alias{kmmStrategy}
 \title{Create an instance of [\code{\linkS4class{ClusterStrategy}}] class}
 \usage{
-kmmStrategy(nbTry = 1, nbInit = 5, initMethod = "class",
-  initAlgo = "EM", nbInitIteration = 20, initEpsilon = 0.01,
-  nbShortRun = 5, shortRunAlgo = "EM", nbShortIteration = 100,
-  shortEpsilon = 1e-04, longRunAlgo = "EM", nbLongIteration = 1000,
-  longEpsilon = 1e-07)
+kmmStrategy(
+  nbTry = 1,
+  nbInit = 5,
+  initMethod = "class",
+  initAlgo = "EM",
+  nbInitIteration = 20,
+  initEpsilon = 0.01,
+  nbShortRun = 5,
+  shortRunAlgo = "EM",
+  nbShortIteration = 100,
+  shortEpsilon = 1e-04,
+  longRunAlgo = "EM",
+  nbLongIteration = 1000,
+  longEpsilon = 1e-07
+)
 }
 \arguments{
 \item{nbTry}{Integer defining the number of estimation to attempt.}

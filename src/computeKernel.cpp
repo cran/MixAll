@@ -34,6 +34,7 @@
 
 
 #include <RTKpp.h>
+
 #include <MixAll.h>
 
 /* Compute the Gram matrix and overwrite the data with the result.

@@ -22,8 +22,8 @@ A vector of character with the model names.
 \description{
 In a Categorical mixture model, we can build 4 models:
 \enumerate{
- \item {The proportions can be equal or free.}
- \item {The probabilities can be equal or free for all the variables.}
+ \item The proportions can be equal or free
+ \item The probabilities can be equal or free for all the variables
 }
 }
 \details{

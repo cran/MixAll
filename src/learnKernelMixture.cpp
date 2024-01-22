@@ -33,9 +33,10 @@
  **/
 
 
-#include "RTKpp.h"
-#include "MixAll.h"
-#include <MixAll/LearnLauncher.h>
+#include <RTKpp.h>
+
+#include <MixAll.h>
+#include <MixAll/include/LearnLauncher.h>
 
 /* @param model a ClusterDiagModel S4 class
  *  @param nbCluster a vector with the number of learns to test

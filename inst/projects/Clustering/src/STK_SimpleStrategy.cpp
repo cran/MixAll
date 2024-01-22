@@ -34,10 +34,10 @@
 
 #include <Sdk.h>
 
-#include "../include/MixtureStrategy/STK_SimpleStrategy.h"
-#include "../include/MixtureInit/STK_MixtureInit.h"
-#include "../include/MixtureAlgo/STK_MixtureAlgo.h"
-#include "../include/STK_IMixtureComposer.h"
+#include <Clustering/include/MixtureStrategy/STK_SimpleStrategy.h>
+#include <Clustering/include/MixtureInit/STK_MixtureInit.h>
+#include <Clustering/include/MixtureAlgo/STK_MixtureAlgo.h>
+#include <Clustering/include/STK_IMixtureComposer.h>
 
 namespace STK
 {

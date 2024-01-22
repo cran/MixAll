@@ -33,12 +33,13 @@
  **/
 
 
-#include "RTKpp.h"
-#include "MixAll.h"
-#include <MixAll/MixAll_Util.h>
-#include <MixAll/KmmLauncher.h>
-#include <MixAll/ClusterFacade.h>
-#include <MixAll/RDataHandler.h>
+#include <RTKpp.h>
+
+#include <MixAll.h>
+#include <MixAll/include/MixAll_Util.h>
+#include <MixAll/include/KmmLauncher.h>
+#include <MixAll/include/ClusterFacade.h>
+#include <MixAll/include/RDataHandler.h>
 
 /* @param model a ClusterDiagModel S4 class
  * @param nbCluster a vector with the number of clusters to test

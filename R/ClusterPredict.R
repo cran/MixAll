@@ -333,7 +333,7 @@ setMethod(
       { stop("Error in ClusterPredictMixedData initialize. all data must have the same number of rows.")}
       else
       { 
-        if ( class(model@lcomponent[[i]]) == "ClusterCategoricalComponent")
+        if ( isa(model@lcomponent[[i]],"ClusterCategoricalComponent") )
         {
           data   <- as.data.frame(ldata[[i]])
           levels <- model@lcomponent[[i]]@levels

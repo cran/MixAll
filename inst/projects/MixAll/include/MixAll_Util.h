@@ -36,7 +36,7 @@
 #ifndef MIXALL_UTIL_H_
 #define MIXALL_UTIL_H_
 
-#include "RTKpp.h"
+#include <RTKpp.h>
 
 namespace STK
 {

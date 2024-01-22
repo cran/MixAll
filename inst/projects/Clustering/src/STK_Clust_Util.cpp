@@ -31,13 +31,13 @@
 /** @file STK_Clust_Util.cpp
  *  @brief In this file we implement the utilities functions of the Clustering project.
  **/
-#include "../include/MixtureCriterion/STK_MixtureCriterion.h"
-#include "../include/MixtureInit/STK_MixtureInit.h"
-#include "../include/MixtureStrategy/STK_MixtureStrategy.h"
-#include "../include/STK_IMixtureComposer.h"
-#include "../include/MixtureAlgo/STK_MixtureAlgo.h"
-#include "../include/MixtureAlgo/STK_MixtureAlgoLearn.h"
-#include "../include/MixtureAlgo/STK_MixtureAlgoPredict.h"
+#include <Clustering/include/MixtureCriterion/STK_MixtureCriterion.h>
+#include <Clustering/include/MixtureInit/STK_MixtureInit.h>
+#include <Clustering/include/MixtureStrategy/STK_MixtureStrategy.h>
+#include <Clustering/include/STK_IMixtureComposer.h>
+#include <Clustering/include/MixtureAlgo/STK_MixtureAlgo.h>
+#include <Clustering/include/MixtureAlgo/STK_MixtureAlgoLearn.h>
+#include <Clustering/include/MixtureAlgo/STK_MixtureAlgoPredict.h>
 
 namespace STK
 {

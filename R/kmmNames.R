@@ -27,8 +27,8 @@
 #' In a Kernel mixture model, sssumptions on the proportions
 #' and standard deviations give rise to 4 models:
 #' \enumerate{
-#'  \item {Proportions can be equal or free.}
-#'  \item {Standard deviations are equal or free for all clusters.}
+#'  \item Proportions can be equal or free.
+#'  \item Standard deviations are equal or free for all clusters.
 #' }
 #' 
 #' The model names are summarized in the following array:

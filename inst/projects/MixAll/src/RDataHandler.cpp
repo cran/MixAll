@@ -32,7 +32,7 @@
  *  @brief In this file we implement the RDataHandler class.
  **/
 
-#include "../inst/projects/MixAll/RDataHandler.h"
+#include <MixAll/include/RDataHandler.h>
 
 namespace STK
 {

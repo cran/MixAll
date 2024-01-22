@@ -34,11 +34,13 @@
 
 #include <Sdk.h>
 
-#include "../include/MixtureInit/STK_MixtureInit.h"
-#include "../include/MixtureAlgo/STK_MixtureAlgo.h"
-#include "../include/STK_IMixtureComposer.h"
+#include <Clustering/include/MixtureInit/STK_MixtureInit.h>
+#include <Clustering/include/MixtureAlgo/STK_MixtureAlgo.h>
+#include <Clustering/include/STK_IMixtureComposer.h>
 
-#include "Arrays/include/STK_Display.h"
+#if STK_MIXTURE_DEBUG | STK_MIXTURE_VERBOSE | STK_MIXTURE_VERY_VERBOSE
+#include <Arrays/include/STK_Display.h>
+#endif
 
 namespace STK
 {

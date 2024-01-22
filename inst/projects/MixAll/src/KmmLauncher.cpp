@@ -34,8 +34,8 @@
  **/
 
 
-#include "../inst/projects/MixAll/KmmLauncher.h"
-#include "../inst/projects/MixAll/ClusterFacade.h"
+#include <MixAll/include/KmmLauncher.h>
+#include <MixAll/include/ClusterFacade.h>
 
 using namespace Rcpp;
 
@@ -280,7 +280,7 @@ Real KmmLauncher::selectBestSingleModel()
   {
     if (p_bestModel) delete p_bestModel;
     if (p_criterion) delete p_criterion;
-    ::Rf_error(e.error().c_str()) ;
+    ::Rf_error("%s",e.error().c_str()) ;
   }
   // failed
   return Arithmetic<Real>::max();
@@ -389,7 +389,7 @@ Real KmmLauncher::selectBestMixedModel()
   {
     if (p_bestModel) delete p_bestModel;
     if (p_criterion) delete p_criterion;
-    ::Rf_error(e.error().c_str()) ;
+    ::Rf_error("%s",e.error().c_str()) ;
   }
   // failed
   return Arithmetic<Real>::max();

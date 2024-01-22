@@ -1,3 +1,4 @@
 #!/bin/sh
 rm inst/lib/libMixAll.a
+rm src/*.o src/*.so src/*.dll
 

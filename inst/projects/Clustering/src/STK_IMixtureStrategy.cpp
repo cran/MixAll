@@ -32,9 +32,9 @@
  *  @brief In this file we implement the interface base class for estimation strategies
  **/
 
-#include "../include/STK_IMixtureComposer.h"
-#include "../include/MixtureInit/STK_MixtureInit.h"
-#include "../include/MixtureStrategy/STK_IMixtureStrategy.h"
+#include <Clustering/include/STK_IMixtureComposer.h>
+#include <Clustering/include/MixtureInit/STK_MixtureInit.h>
+#include <Clustering/include/MixtureStrategy/STK_IMixtureStrategy.h>
 
 namespace STK
 {

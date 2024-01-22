@@ -8,11 +8,21 @@
 \title{A strategy is a multistage empirical process for finding a
 good estimate in the clustering estimation process.}
 \usage{
-clusterStrategy(nbTry = 1, nbInit = 5, initMethod = "class",
-  initAlgo = "EM", nbInitIteration = 20, initEpsilon = 0.01,
-  nbShortRun = 5, shortRunAlgo = "EM", nbShortIteration = 100,
-  shortEpsilon = 1e-04, longRunAlgo = "EM", nbLongIteration = 1000,
-  longEpsilon = 1e-07)
+clusterStrategy(
+  nbTry = 1,
+  nbInit = 5,
+  initMethod = "class",
+  initAlgo = "EM",
+  nbInitIteration = 20,
+  initEpsilon = 0.01,
+  nbShortRun = 5,
+  shortRunAlgo = "EM",
+  nbShortIteration = 100,
+  shortEpsilon = 1e-04,
+  longRunAlgo = "EM",
+  nbLongIteration = 1000,
+  longEpsilon = 1e-07
+)
 
 clusterSemiSEMStrategy()
 
@@ -70,8 +80,7 @@ when using an EM algorithm or its variants. A ``try'' is composed of three stage
 \itemize{
   \item \code{nbShortRun} short iterations of the initialization step and
    of the \code{EM}, \code{CEM}, \code{SEM} or \code{SemiSEM} algorithm.
-  \item \code{nbInit} initializations using the [\code{\link{clusterInit}}]
-  method.
+  \item \code{nbInit} initializations using the [\code{\link{clusterInit}}] method.
   \item A long run of the \code{EM}, \code{CEM}, \code{SEM} or \code{SemiSEM} algorithm.
 }
 For example if \code{nbInit} is 5 and \code{nbShortRun} is also 5, there will

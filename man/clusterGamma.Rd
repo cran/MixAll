@@ -4,8 +4,14 @@
 \alias{clusterGamma}
 \title{Create an instance of the [\code{\linkS4class{ClusterGamma}}] class}
 \usage{
-clusterGamma(data, nbCluster = 2, models = "gamma_pk_ajk_bjk",
-  strategy = clusterStrategy(), criterion = "ICL", nbCore = 1)
+clusterGamma(
+  data,
+  nbCluster = 2,
+  models = "gamma_pk_ajk_bjk",
+  strategy = clusterStrategy(),
+  criterion = "ICL",
+  nbCore = 1
+)
 }
 \arguments{
 \item{data}{frame or matrix containing the data. Rows correspond to observations
@@ -45,6 +51,7 @@ x[round(runif(5,1,nrow(geyser))), 1] <- NA
 x[round(runif(5,1,nrow(geyser))), 2] <- NA
 
 ## use graphics functions
+set.seed(2)
 model <- clusterGamma( data=x, nbCluster=2:3
                      , models="gamma_pk_ajk_bjk"
                      , strategy = clusterFastStrategy())

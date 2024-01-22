@@ -18,6 +18,7 @@ model <- learnDiagGaussian( data=x, labels= z,
                           , algo = "impute", nbIter = 2, epsilon = 1e-08)
 missingValues(model)
 print(model)
+set.seed(2)
 model <- learnGamma( data=x, labels= z,
                    , models = clusterGammaNames(prop = "equal")
                    , algo = "simul", nbIter = 2, epsilon = 1e-08

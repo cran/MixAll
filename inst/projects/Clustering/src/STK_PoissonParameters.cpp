@@ -33,7 +33,7 @@
  *  mixture models
  **/
 
-#include "../include/PoissonModels/STK_PoissonParameters.h"
+#include <Clustering/include/PoissonModels/STK_PoissonParameters.h>
 
 namespace STK
 {

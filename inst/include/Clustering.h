@@ -39,15 +39,15 @@
  *  in order to manipulate and estimate the parameters of any kind of
  *  generative mixture model.
  *
- *  In statistics, a mixture model is a probabilistic model for representing
+ *  In statistics, a <b> mixture model</b> is a probabilistic model for representing
  *  the presence of sub-populations within an overall population, without
  *  requiring that an observed data-set should identify the sub-population to
- *  which an individual observation belongs. Formally a mixture model
+ *  which an individual observation belongs. Formally a  mixture model </
  *  corresponds to the mixture distribution that represents the probability
  *  distribution of observations in the overall population. However, while
- *  problems associated with <mixture distributions< relate to deriving the
+ *  problems associated with  mixture distributions relate to deriving the
  *  properties of the overall population from those of the sub-populations,
- *  <mixture models< are used to make statistical inferences about the
+ *  mixture models are used to make statistical inferences about the
  *  properties of the sub-populations given only observations on the pooled
  *  population, without sub-population-identity information.
  *
@@ -80,6 +80,7 @@
 #include <Clustering/include/MixtureInit/STK_MixtureInit.h>
 
 #include <Clustering/include/STK_MixtureComposer.h>
+#include <Clustering/include/STK_MixtureComposerFacade.h>
 #include <Clustering/include/STK_MixtureLearner.h>
 #include <Clustering/include/STK_MixtureSemiLearner.h>
 #include <Clustering/include/STK_MixtureFacade.h>

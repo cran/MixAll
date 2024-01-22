@@ -32,7 +32,7 @@
  **/
 
 
-#include "../include/STK_IMixtureLearner.h"
+#include <Clustering/include/STK_IMixtureLearner.h>
 
 namespace STK
 {

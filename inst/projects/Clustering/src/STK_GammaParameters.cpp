@@ -33,7 +33,7 @@
  *  mixture models
  **/
 
-#include "../include/GammaModels/STK_GammaParameters.h"
+#include <Clustering/include/GammaModels/STK_GammaParameters.h>
 
 namespace STK
 {

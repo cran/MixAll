@@ -33,7 +33,7 @@
  *  mixture models
  **/
 
-#include "../include/DiagGaussianModels/STK_DiagGaussianParameters.h"
+#include <Clustering/include/DiagGaussianModels/STK_DiagGaussianParameters.h>
 
 namespace STK
 {

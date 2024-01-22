@@ -39,7 +39,7 @@
 #include <Arrays/include/STK_Display.h>
 #endif
 
-#include "../include/STK_IMixtureComposer.h"
+#include <Clustering/include/STK_IMixtureComposer.h>
 
 #include <STatistiK/include/STK_Law_Categorical.h>
 #include <STatistiK/include/STK_Stat_Functors.h>

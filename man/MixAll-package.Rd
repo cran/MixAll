@@ -2,6 +2,7 @@
 % Please edit documentation in R/MixAll.R
 \docType{package}
 \name{MixAll-package}
+\alias{MixAll}
 \alias{MixAll-package}
 \title{MixAll
 Allows to estimate parametric mixture models with mixed data

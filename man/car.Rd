@@ -4,7 +4,8 @@
 \name{car}
 \alias{car}
 \title{Qualitative data : Car Evaluation}
-\format{A data frame with 1728 observations on the following 6 variables.
+\format{
+A data frame with 1728 observations on the following 6 variables.
 
 \describe{
   \item{\code{buying}}{the buying price (4 modalities: vhigh, high, med, low)}
@@ -14,7 +15,8 @@
   \item{\code{lug_boot}}{the size of luggage boot  (3 modalities: small, med, big)}
   \item{\code{safety}}{the estimated safety of the car (3 modalities: low, med, high)}
   \item{\code{acceptability}}{the car acceptability (4 modalities: unacc, acc, good, vgood)}
-}}
+}
+}
 \source{
 Creator: Marko Bohanec
 Donors: Marko Bohanec & Blaz Zupan

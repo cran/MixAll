@@ -48,11 +48,11 @@ namespace STK
 /** base class of the Gamma models Parameter Handler */
 struct ParametersGammaBase
 {
-  /** mean */
+  /** mean for each class */
   Array1D<CPointX> mean_;
-  /** log-means */
+  /** log-means for each class */
   Array1D<CPointX> meanLog_;
-  /** variance_ */
+  /** variance for each class */
   Array1D<CPointX> variance_;
 
   /** default constructor */

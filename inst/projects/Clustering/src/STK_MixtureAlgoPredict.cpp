@@ -35,8 +35,8 @@
 
 #include <Sdk.h>
 
-#include "../include/MixtureAlgo/STK_MixtureAlgoPredict.h"
-#include "../include/STK_IMixtureComposer.h"
+#include <Clustering/include/MixtureAlgo/STK_MixtureAlgoPredict.h>
+#include <Clustering/include/STK_IMixtureComposer.h>
 
 namespace STK
 {

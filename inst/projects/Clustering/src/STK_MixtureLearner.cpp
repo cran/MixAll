@@ -33,7 +33,8 @@
  *  @brief In this file we implement the class MixtureLearner.
  **/
 
-#include "../include/STK_MixtureLearner.h"
+#include <Clustering/include/STK_MixtureLearner.h>
+
 #include <Arrays/include/STK_Display.h>
 
 namespace STK

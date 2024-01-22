@@ -39,7 +39,9 @@ MIXALL_BIN_DIR = bin/
 MIXALL_LIB_DIR = lib/
 MIXALL_LIB = $(MIXALL_LIB_DIR)$(LIB_MIXALL_A)
 
+## For debug in git direcgtory
 # check if we are using symoblic paths
+# PROJECTS_DIR, INCLUDES_DIR and BIN_DIR are needed when compiling projects
 TOP_DIR      = ../../../
 BIN_DIR      = $(TOP_DIR)$(MIXALL_BIN_DIR)
 MAKEVARS     = $(TOP_DIR)$(RELATIVEMAKEVARS)
@@ -70,27 +72,33 @@ echo:
 #-----------------------------------------------------------------------
 # projects paths
 CLUSTERING_DIR= $(MIXALL_PROJECTS_DIR)Clustering/
+MIXALL_DIR= $(MIXALL_PROJECTS_DIR)MixAll/
 
 SRC_CLUSTERING_DIR= $(CLUSTERING_DIR)src/
+SRC_MIXALL_DIR= $(MIXALL_DIR)src/
 
 #-----------------------------------------------------------------------
 # projects binaries
 CLUSTERING_OBJS= $(patsubst $(SRC_CLUSTERING_DIR)%.cpp, $(MIXALL_BIN_DIR)%.o, $(wildcard $(SRC_CLUSTERING_DIR)*.cpp))
+MIXALL_OBJS= $(patsubst $(SRC_MIXALL_DIR)%.cpp, $(MIXALL_BIN_DIR)%.o, $(wildcard $(SRC_MIXALL_DIR)*.cpp))
 
 #-----------------------------------------------------------------------
 # rules for compiling each projects
-.PHONY: clustering
+.PHONY: clustering mixall
 
 clustering:
 	$(MAKE) -C $(SRC_CLUSTERING_DIR)
+mixall:
+	$(MAKE) -C $(SRC_MIXALL_DIR)
 
 #-----------------------------------------------------------------------
 # COMMENT or UNCOMMENT the projects you need for your package
 # all binaries you need
-obj: clustering
+obj: clustering mixall
 
 CPP_OBJS = \
-  $(CLUSTERING_OBJS)
+  $(CLUSTERING_OBJS) \
+  $(MIXALL_OBJS)
 
 #-----------------------------------------------------------------------
 # create the library adding the objects
@@ -99,15 +107,14 @@ $(MIXALL_LIB): obj
 
 #-----------------------------------------------------------------------
 # rules for cleaning objects
-.PHONY: clean clean_lib clean_obj clean_clustering
+.PHONY: clean clean_lib clean_objs clean_clustering
 
-clean: clean_obj
+clean: clean_objs
 
 clean_lib:
 	$(RM) $(MIXALL_LIB)
 
-clean_obj: \
-  clean_clustering
-
-clean_clustering:
+clean_objs:
 	$(RM) $(CLUSTERING_OBJS)
+	$(RM) $(MIXALL_OBJS)
+	

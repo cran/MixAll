@@ -5,7 +5,7 @@
 \alias{DebTrivedi}
 \title{Counting Data: DebTrivedi}
 \source{
-\url{http://www.jstatsoft.org/v27/i08/paper}
+\url{https://www.jstatsoft.org/htaccess.php?volume=27&type=i&issue=08&filename=paper}
 }
 \description{
 Deb and Trivedi (1997) analyze data on 4406 individuals, aged 66 and over, who are covered

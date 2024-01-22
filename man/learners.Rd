@@ -7,21 +7,53 @@
 \alias{learnCategorical}
 \title{Create an instance of a learn mixture model}
 \usage{
-learnDiagGaussian(data, labels, prop = NULL,
-  models = clusterDiagGaussianNames(prop = "equal"), algo = "simul",
-  nbIter = 100, epsilon = 1e-08, criterion = "ICL", nbCore = 1)
+learnDiagGaussian(
+  data,
+  labels,
+  prop = NULL,
+  models = clusterDiagGaussianNames(prop = "equal"),
+  algo = "simul",
+  nbIter = 100,
+  epsilon = 1e-08,
+  criterion = "ICL",
+  nbCore = 1
+)
 
-learnPoisson(data, labels, prop = NULL,
-  models = clusterPoissonNames(prop = "equal"), algo = "simul",
-  nbIter = 100, epsilon = 1e-08, criterion = "ICL", nbCore = 1)
+learnPoisson(
+  data,
+  labels,
+  prop = NULL,
+  models = clusterPoissonNames(prop = "equal"),
+  algo = "simul",
+  nbIter = 100,
+  epsilon = 1e-08,
+  criterion = "ICL",
+  nbCore = 1
+)
 
-learnGamma(data, labels, prop = NULL, models = clusterGammaNames(prop =
-  "equal"), algo = "simul", nbIter = 100, epsilon = 1e-08,
-  criterion = "ICL", nbCore = 1)
+learnGamma(
+  data,
+  labels,
+  prop = NULL,
+  models = clusterGammaNames(prop = "equal"),
+  algo = "simul",
+  nbIter = 100,
+  epsilon = 1e-08,
+  criterion = "ICL",
+  nbCore = 1
+)
 
-learnCategorical(data, labels, prop = NULL,
-  models = clusterCategoricalNames(prop = "equal"), algo = "simul",
-  nbIter = 100, epsilon = 1e-08, criterion = "ICL", nbCore = 1)
+learnCategorical(
+  data,
+  labels,
+  prop = NULL,
+  models = clusterCategoricalNames(prop = "equal"),
+  algo = "simul",
+  nbIter = 100,
+  epsilon = 1e-08,
+  criterion = "ICL",
+  nbCore = 1
+)
 }
 \arguments{
 \item{data}{frame or matrix containing the data. Rows correspond to observations

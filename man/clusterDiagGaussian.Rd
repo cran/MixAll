@@ -4,9 +4,14 @@
 \alias{clusterDiagGaussian}
 \title{Create an instance of the [\code{\linkS4class{ClusterDiagGaussian}}] class}
 \usage{
-clusterDiagGaussian(data, nbCluster = 2,
-  models = clusterDiagGaussianNames(), strategy = clusterStrategy(),
-  criterion = "ICL", nbCore = 1)
+clusterDiagGaussian(
+  data,
+  nbCluster = 2,
+  models = clusterDiagGaussianNames(),
+  strategy = clusterStrategy(),
+  criterion = "ICL",
+  nbCore = 1
+)
 }
 \arguments{
 \item{data}{frame or matrix containing the data. Rows correspond to observations

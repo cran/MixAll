@@ -33,8 +33,8 @@
  *  @brief In this file we implement the run method of the interface prediction algorithms.
  **/
 
-#include "../include/MixtureAlgo/STK_IMixtureAlgoPredict.h"
-#include "../include/STK_IMixtureComposer.h"
+#include <Clustering/include/MixtureAlgo/STK_IMixtureAlgoPredict.h>
+#include <Clustering/include/STK_IMixtureComposer.h>
 
 namespace STK
 {

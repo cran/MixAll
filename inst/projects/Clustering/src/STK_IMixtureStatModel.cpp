@@ -33,7 +33,7 @@
  *  @brief In this file we implement the abstract base class for mixture statistical models.
  **/
 
-#include "../include/STK_IMixtureStatModel.h"
+#include <Clustering/include/STK_IMixtureStatModel.h>
 
 namespace STK
 {

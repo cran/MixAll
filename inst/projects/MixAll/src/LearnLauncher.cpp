@@ -34,7 +34,7 @@
  **/
 
 
-#include "../inst/projects/MixAll/LearnLauncher.h"
+#include <MixAll/include/LearnLauncher.h>
 
 using namespace Rcpp;
 
@@ -199,7 +199,7 @@ Real LearnLauncher::selectBestSingleModel()
   catch (Exception const& e)
   {
     if (p_current) delete p_current;
-    ::Rf_error(e.error().c_str()) ;
+    ::Rf_error("%s",e.error().c_str()) ;
   }
   // failed
   return Arithmetic<Real>::max();
@@ -242,13 +242,11 @@ Real LearnLauncher::selectBestMixedModel()
       {
         NumericMatrix m_data = s4_component.slot("data");
         createDataSets(m_data, idData, model);
-//        createDiscreteDataSets(idData, s4_component, model);
       }
       else
       {
         IntegerMatrix m_data = s4_component.slot("data");
         createDataSets(m_data, idData, model);
-//        createContinuousDataSets(idData, s4_component, model);
       }
     }
     // create learner
@@ -286,7 +284,7 @@ Real LearnLauncher::selectBestMixedModel()
   catch (Exception const& e)
   {
     if (p_current) delete p_current;
-    ::Rf_error(e.error().c_str()) ;
+    ::Rf_error("%s",e.error().c_str()) ;
   }
   // failed
   return Arithmetic<Real>::max();

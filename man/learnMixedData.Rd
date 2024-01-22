@@ -5,8 +5,17 @@
 \title{This function learn the optimal mixture model when the class labels are known
 according to the \code{criterion} among the list of model given in \code{models}.}
 \usage{
-learnMixedData(data, models, labels, prop = NULL, algo = "impute",
-  nbIter = 100, epsilon = 1e-08, criterion = "ICL", nbCore = 1)
+learnMixedData(
+  data,
+  models,
+  labels,
+  prop = NULL,
+  algo = "impute",
+  nbIter = 100,
+  epsilon = 1e-08,
+  criterion = "ICL",
+  nbCore = 1
+)
 }
 \arguments{
 \item{data}{[\code{list}] containing the data sets (matrices and/or data.frames).

@@ -43,6 +43,8 @@ extern "C"
 {
 #endif
 
+#include <Rinternals.h> // for SEXP
+
 // mixture models
 /** @param model any model derived from IClusterModel S4 class
  *  @param nbCluster a vector with the number of clusters to test
@@ -102,11 +104,11 @@ SEXP learnMixedData( SEXP model, SEXP algo, SEXP nbCore);
  *  @param nbCore number of core to use
  */
 SEXP learnKmm( SEXP model, SEXP models, SEXP algo, SEXP nbCore);
-/** @param model a ClusterKmm S4 class
- *  @param models a vector of string with the model names to try
- *  @param critName name criteria string
- *  @param nbCore number of core to use
- */
+// /** @param model a ClusterKmm S4 class
+//  *  @param models a vector of string with the model names to try
+//  *  @param critName name criteria string
+//  *  @param nbCore number of core to use
+//  */
 //SEXP learnKmmMixedData( SEXP model, SEXP algo, SEXP nbCore);
 
 #ifdef __cplusplus

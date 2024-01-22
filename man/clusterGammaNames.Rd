@@ -5,9 +5,13 @@
 \alias{clusterValidGammaNames}
 \title{Create a vector of gamma mixture model names.}
 \usage{
-clusterGammaNames(prop = "all", shapeInCluster = "all",
-  shapeBetweenCluster = "all", scaleInCluster = "all",
-  scaleBetweenCluster = "all")
+clusterGammaNames(
+  prop = "all",
+  shapeInCluster = "all",
+  shapeBetweenCluster = "all",
+  scaleInCluster = "all",
+  scaleBetweenCluster = "all"
+)
 
 clusterValidGammaNames(names)
 }
@@ -40,11 +44,11 @@ between all the clusters.
 
 This gives rise to 24 models:
 \enumerate{
- \item {The proportions can be equal or free.}
- \item {The shapes can be equal or free in each clusters.}
- \item {The shapes can be equal or free between all clusters.}
- \item {The scales can be equal or free for each clusters.}
- \item {The scales can be equal or free between all clusters.}
+ \item The proportions can be equal or free
+ \item The shapes can be equal or free in each clusters
+ \item The shapes can be equal or free between all clusters
+ \item The scales can be equal or free for each clusters
+ \item The scales can be equal or free between all clusters
 }
 
 The model names are summarized in the following array:

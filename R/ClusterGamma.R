@@ -56,6 +56,7 @@ NULL
 #' x[round(runif(5,1,nrow(geyser))), 2] <- NA
 #'
 #' ## use graphics functions
+#' set.seed(2)
 #' model <- clusterGamma( data=x, nbCluster=2:3
 #'                      , models="gamma_pk_ajk_bjk"
 #'                      , strategy = clusterFastStrategy())

@@ -54,7 +54,7 @@
   par(mar = rep(2.5,4), cex = .75, oma = c(0, 0, 3, 0))        # margin and font size
   nbCol = length(y)                       # size of the matrix screen
   split.screen(c(nbCol, nbCol))           # create layout matrix screens
-  col = model@zi+2;                       # color for each group
+  col = model@zi+1;                       # color for each group
   pch = rep(1, length.out = length(col)); # circles
   pch[model@component@missing[,1]] = 3;   # + for missing values
   # create histograms on the diagonal

@@ -33,10 +33,11 @@
  **/
 
 
-#include "RTKpp.h"
-#include "MixAll.h"
-#include <MixAll/ClusterPredictor.h>
-#include <MixAll/ClusterPredictorMixedData.h>
+#include <RTKpp.h>
+
+#include <MixAll.h>
+#include <MixAll/include/ClusterPredictor.h>
+#include <MixAll/include/ClusterPredictorMixedData.h>
 
 /*  @param nbCore number of core to use
  */

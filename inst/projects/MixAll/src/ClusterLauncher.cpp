@@ -28,14 +28,14 @@
  * Author:   iovleff, serge.iovleff@stkpp.org
  **/
 
-/** @file STK_ClusterLauncher.cpp
+/** @file ClusterLauncher.cpp
  *  @brief In this file we implement the ClusterLauncher which
  *  construct properly a mixture model.
  **/
 
 
-#include "../inst/projects/MixAll/ClusterLauncher.h"
-#include "../inst/projects/MixAll/ClusterFacade.h"
+#include <MixAll/include/ClusterLauncher.h>
+#include <MixAll/include/ClusterFacade.h>
 
 using namespace Rcpp;
 
@@ -198,7 +198,7 @@ Real ClusterLauncher::selectBestSingleModel()
   {
     if (p_current)   { delete p_current; p_current = 0;}
     if (p_criterion) { delete p_criterion; p_criterion = 0;}
-    ::Rf_error(e.error().c_str()) ;
+    ::Rf_error("%s",e.error().c_str()) ;
   }
   // failed
   return Arithmetic<Real>::max();
@@ -288,7 +288,7 @@ Real ClusterLauncher::selectBestMixedModel()
   {
     if (p_current) delete p_current;
     if (p_criterion) delete p_criterion;
-    ::Rf_error(e.error().c_str()) ;
+    ::Rf_error("%s",e.error().c_str()) ;
   }
   // failed
   return Arithmetic<Real>::max();

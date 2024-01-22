@@ -7,7 +7,8 @@
 \alias{HeartDisease.cont}
 \alias{HeartDisease.target}
 \title{Mixed data : Cleveland Heart Disease Data}
-\format{Three data frames with 303 observations on the following 14 variables.
+\format{
+Three data frames with 303 observations on the following 14 variables.
 
 \describe{
  \item{\code{age}}{age in years}
@@ -35,7 +36,8 @@
               0: < 50% diameter narrowing
               1: > 50% diameter narrowing
     (in any major vessel: attributes 59 through 68 are vessels)}
-}}
+}
+}
 \source{
 Author: David W. Aha (aha 'AT' ics.uci.edu) (714) 856-8779
 

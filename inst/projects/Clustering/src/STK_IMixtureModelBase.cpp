@@ -33,7 +33,7 @@
  *  @brief In this file we implement the interface base class IMixtureModelBase
  **/
 
-#include "../include/STK_IMixtureModelBase.h"
+#include <Clustering/include/STK_IMixtureModelBase.h>
 
 namespace STK
 {

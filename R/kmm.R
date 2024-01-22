@@ -614,7 +614,7 @@ setMethod(
         }
       }
       # scatter plot
-      plot(as.data.frame(data[,y]), col = x@zi+2)
+      plot(as.data.frame(data[,y]), col = x@zi+1)
     }
 )
 

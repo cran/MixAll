@@ -4,9 +4,14 @@
 \alias{clusterCategorical}
 \title{Create an instance of the [\code{\linkS4class{ClusterCategorical}}] class}
 \usage{
-clusterCategorical(data, nbCluster = 2,
+clusterCategorical(
+  data,
+  nbCluster = 2,
   models = clusterCategoricalNames(probabilities = "free"),
-  strategy = clusterStrategy(), criterion = "ICL", nbCore = 1)
+  strategy = clusterStrategy(),
+  criterion = "ICL",
+  nbCore = 1
+)
 }
 \arguments{
 \item{data}{a data.frame or a matrix containing the data. Rows correspond to

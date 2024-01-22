@@ -34,7 +34,7 @@
  **/
 
 
-#include "../inst/projects/MixAll/ILauncher.h"
+#include <MixAll/include/ILauncher.h>
 
 using namespace Rcpp;
 

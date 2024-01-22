@@ -28,15 +28,15 @@
 #' \itemize{
 #'        \item Algorithms:
 #'           \itemize{
-#'               \item \code{EM}  {The Expectation Maximisation algorithm}
-#'               \item \code{CEM} {The Classification EM algorithm}
-#'               \item \code{SEM} {The Stochastic EM algorithm}
-#'               \item \code{SemiSEM} {The Semi-Stochastic EM algorithm}
+#'               \item \code{EM}: The Expectation Maximisation algorithm
+#'               \item \code{CEM}: The Classification EM algorithm
+#'               \item \code{SEM}: The Stochastic EM algorithm
+#'               \item \code{SemiSEM}: The Semi-Stochastic EM algorithm
 #'           }
 #'        \item Stopping rules:
 #'           \itemize{
-#'               \item \code{nbIteration} {Set the maximum number of iterations.}
-#'               \item \code{epsilon} {Set relative increase of the log-likelihood criterion.}
+#'               \item \code{nbIteration}: Set the maximum number of iterations
+#'               \item \code{epsilon}: Set relative increase of the log-likelihood criterion
 #'           }
 #'        \item Default values are \eqn{200} \code{nbIteration} of \code{EM}
 #'         with an \code{epsilon} value of \eqn{1.e-8}.

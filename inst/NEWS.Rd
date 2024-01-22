@@ -2,6 +2,12 @@
 \title{News for Package 'MixAll}
 
 
+\section{Changes in MixAll version 1.5.2 (2023-12-01)}{
+ \itemize{
+  \item Correcting potentially insecure problem with error messages
+  \item Updating documentation
+  }
+}
 \section{Changes in MixAll version 1.5.1 (2019-09-12)}{
   \itemize{
   \item Debugging clusterPredict method

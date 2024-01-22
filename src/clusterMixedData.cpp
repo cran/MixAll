@@ -33,9 +33,10 @@
  **/
 
 
-#include "RTKpp.h"
-#include "MixAll.h"
-#include <MixAll/ClusterLauncher.h>
+#include <RTKpp.h>
+
+#include <MixAll.h>
+#include <MixAll/include/ClusterLauncher.h>
 
 /* @param model any model derived from IClusterModel S4 class
  *  @param nbCluster a vector with the number of clusters to test

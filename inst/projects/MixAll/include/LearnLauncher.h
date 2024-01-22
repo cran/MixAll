@@ -50,6 +50,7 @@ class LearnLauncher: public ILauncher
   public:
     /** constructor.
      * @param model a reference on the current model
+     * @param models a vector with the names of the models to learn
      * @param algo the algorithm defined in R
      **/
     LearnLauncher( Rcpp::S4 model, Rcpp::CharacterVector models, Rcpp::S4 algo );
@@ -64,8 +65,8 @@ class LearnLauncher: public ILauncher
     bool run();
 
   protected:
-    /** strategy from the R side */
-    Rcpp::S4    s4_algo_;
+    /** algorithm from the R side */
+    Rcpp::S4 s4_algo_;
     /** character string with the model selection criterion name */
     String criterion_;
     /** learning algorithm to run */
@@ -79,11 +80,11 @@ class LearnLauncher: public ILauncher
     /** Is the model with mixed data ? */
     bool isMixedData_;
 
-    /** Select the best model among the models and nbCluster given.
+    /** Select the best model among the list of model given.
      *  @return the value of the best criteria.
      **/
     Real selectBestSingleModel();
-    /** Select the best model among the models and nbCluster given.
+    /** Select the best mixed model.
      *  @return the value of the best criteria.
      **/
     Real selectBestMixedModel();

@@ -57,13 +57,13 @@ namespace STK
  *
  *  The pseudo pure virtual method to implement in derived classes are
  *  @code
- *    void getMissingValuesImpl(
+ *    void getMissingValuesImpl(IMixture* p_mixture, MissingValues& missing) const;
  *    void getParametersImpl(IMixture* p_mixture, ArrayXX& data) const;
  *    void setParametersImpl(IMixture* p_mixture, ArrayXX const& data) const;
  *    IMixture* createMixtureImpl(String const& modelName, String const& idData, int nbCluster);
  *  @endcode
  *
- *  @tparam DataHandler any concrete class from the interface STK::DataHandlerBase
+ *  @tparam Derived any concrete class derived from this interface
  */
 template<class Derived>
 class IMixtureManager: public IRecursiveTemplate<Derived>

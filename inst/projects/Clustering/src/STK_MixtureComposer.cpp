@@ -33,7 +33,7 @@
  *  @brief In this file we implement the class MixtureComposer.
  **/
 
-#include "../include/STK_MixtureComposer.h"
+#include <Clustering/include/STK_MixtureComposer.h>
 #include <Arrays/include/STK_Display.h>
 
 namespace STK

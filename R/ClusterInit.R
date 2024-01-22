@@ -33,10 +33,10 @@ NULL
 #' @details
 #' There is three ways to initialize the parameters:
 #' \itemize{
-#'   \item \code{random} {The initial parameters of the mixture are chosen randomly.}
-#'   \item \code{class}  {The initial membership of individuals are sampled randomly.}
-#'   \item \code{fuzzy}  {The initial probabilities of membership of individuals are
-#'                        sampled randomly.}
+#'   \item \code{random}: The initial parameters of the mixture are chosen randomly
+#'   \item \code{class}: The initial membership of individuals are sampled randomly
+#'   \item \code{fuzzy}: The initial probabilities of membership of individuals
+#'                         are sampled randomly
 #' }
 #' A few iterations of an algorithm [\code{\link{clusterAlgo}}] are then performed.
 #' It is strongly recommended to use a few number of iterations of the \code{EM}

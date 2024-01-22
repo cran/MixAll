@@ -72,7 +72,7 @@ class Gamma_aj_bjk: public GammaBase< Gamma_aj_bjk<Array> >
   public:
     typedef GammaBase< Gamma_aj_bjk<Array> > Base;
     using Base::param_;
-    
+
     using Base::p_data;
     using Base::meanjk;
     using Base::variancejk;
@@ -105,7 +105,7 @@ class Gamma_aj_bjk: public GammaBase< Gamma_aj_bjk<Array> >
  *  will be set to 1.
  */
 template<class Array>
-void Gamma_aj_bjk<Array>::randomInit( CArrayXX const* const& p_tik, CPointX const* const& p_tk) 
+void Gamma_aj_bjk<Array>::randomInit( CArrayXX const* const& p_tik, CPointX const* const& p_tk)
 {
   // compute moments
   this->moments(p_tik);
@@ -128,7 +128,7 @@ void Gamma_aj_bjk<Array>::randomInit( CArrayXX const* const& p_tik, CPointX cons
 
 /* Compute the weighted mean and the common variance. */
 template<class Array>
-bool Gamma_aj_bjk<Array>::run( CArrayXX const* const& p_tik, CPointX const* const& p_tk) 
+bool Gamma_aj_bjk<Array>::run( CArrayXX const* const& p_tik, CPointX const* const& p_tk)
 {
   if (!this->moments(p_tik)) { return false;}
   // estimate a and b
@@ -145,7 +145,8 @@ bool Gamma_aj_bjk<Array>::run( CArrayXX const* const& p_tik, CPointX const* cons
     y  /= this->nbSample();
     x0 /= this->nbSample();
     Real x1 = param_.shape_[j];
-    if ((x0 <=0.) || (isNA(x0))) return false;
+    if ((x0 <=0.) || (isNA(x0)))
+    { x0 = 1; return false;}
 
     // get shape
     hidden::invPsiMLog f(y);

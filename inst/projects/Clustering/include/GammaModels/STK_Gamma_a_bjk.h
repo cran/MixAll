@@ -36,7 +36,7 @@
 #define STK_GAMMA_A_BJK_H
 
 #include <STatistiK/include/STK_Law_Exponential.h>
-#include "../GammaModels/STK_GammaBase.h"
+#include "STK_GammaBase.h"
 
 namespace STK
 {
@@ -125,7 +125,8 @@ void Gamma_a_bjk<Array>::randomInit( CArrayXX const* const& p_tik, CPointX const
 template<class Array>
 bool Gamma_a_bjk<Array>::run( CArrayXX const* const& p_tik, CPointX const* const& p_tk)
 {
-  if (!this->moments(p_tik)) { return false;}
+  bool flag = true;
+  if (!this->moments(p_tik)) { flag = false;}
   // estimate a
   Real y =0.0, x0 = 0.0, x1 = param_.shape_;
   for (int j=p_data()->beginCols(); j < p_data()->endCols(); ++j)
@@ -140,11 +141,28 @@ bool Gamma_a_bjk<Array>::run( CArrayXX const* const& p_tik, CPointX const* const
   y  /= (this->nbSample()*p_data()->sizeCols());
   x0 /= (this->nbSample()*p_data()->sizeCols());
   // moment estimate and oldest value
-  if ((x0 <=0.) || (isNA(x0))) return false;
+  if ((x0 <=0.) || (isNA(x0)))
+  { x0 = 1; flag = false;}
 
   // get shape
   hidden::invPsiMLog f(y);
-  Real a = Algo::findZero(f, x0, x1, 1e-08);
+  Real a = x0; // use moment estimate
+  try
+  {
+    a = Algo::findZero(f, x0, x1, 1e-08);
+  }
+  catch (...)
+  {
+#ifdef STK_MIXTURE_DEBUG
+      stk_cout << "ML estimation failed in Gamma_a_bjk::run( CArrayXX const* const& p_tik, CPointX const* const& p_tk) \n";
+      stk_cout << "x0 =" << x0 << _T("\n";);
+      stk_cout << "f(x0) =" << f(x0) << _T("\n";);
+      stk_cout << "x1 =" << x1 << _T("\n";);
+      stk_cout << "f(x1) =" << f(x1) << _T("\n";);
+#endif
+      a = x0; // use moment estimate
+      flag = false;
+  }
   if (!Arithmetic<Real>::isFinite(a))
   {
 #ifdef STK_MIXTURE_DEBUG
@@ -154,7 +172,8 @@ bool Gamma_a_bjk<Array>::run( CArrayXX const* const& p_tik, CPointX const* const
     stk_cout << "x1 =" << x1 << _T("\n";);
     stk_cout << "f(x1) =" << f(x1) << _T("\n";);
 #endif
-    a = x0; // use moment estimate
+    a = 1.; // use default value
+    flag = false;
   }
   // set values
   param_.shape_ = a;
@@ -164,7 +183,7 @@ bool Gamma_a_bjk<Array>::run( CArrayXX const* const& p_tik, CPointX const* const
     for (int k= p_tik->beginCols(); k < p_tik->endCols(); ++k)
     { param_.scale_[k][j] = param_.mean_[k][j]/a;}
   }
-  return true;
+  return flag;
 }
 
 }  // namespace STK

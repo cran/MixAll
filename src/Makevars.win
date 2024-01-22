@@ -22,22 +22,19 @@
 ## debug flags PKG_CPPFLAGS and STK_CPPFLAGS
 #-DSTK_MIXTURE_DEBUG -DSTK_MIXTURE_VERBOSE -DSTK_MIXTURE_VERY_VERBOSE
 
-# Name of the MixAll library
-
-## Flags needed by STK
-STK_CPPFLAGS  = $(ALL_CPPFLAGS) 
-STK_CXXFLAGS  = $(ALL_CXXFLAGS) $(SHLIB_OPENMP_CXXFLAGS)
+## Flags needed by projects Clustering and MixAll
+STK_CPPFLAGS = $(ALL_CPPFLAGS) 
+STK_CXXFLAGS = $(ALL_CXXFLAGS) $(SHLIB_OPENMP_CXXFLAGS)
 LIB_MIXALL_A = libMixAll.a
 
 ## Flags needed in src
 PKG_LIB_A     = ../inst/lib/libMixAll.a
 PKG_PROJECTS =  -I../inst/include -I../inst/projects/
 
-######
 ## Use the R_HOME indirection to support installations of multiple R version
 # flags needed by R
 PKG_LIBS = $(PKG_LIB_A) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(SHLIB_OPENMP_CXXFLAGS)
-PKG_CXXFLAGS = `$(R_HOME)/bin$(R_ARCH_BIN)/Rscript -e "rtkore:::CxxFlags()"` $(PKG_PROJECTS)  $(SHLIB_OPENMP_CXXFLAGS)
+PKG_CXXFLAGS = `$(R_HOME)/bin$(R_ARCH_BIN)/Rscript -e "rtkore:::CxxFlags()"`  $(PKG_PROJECTS)  $(SHLIB_OPENMP_CXXFLAGS)
 PKG_CPPFLAGS = `$(R_HOME)/bin$(R_ARCH_BIN)/Rscript -e "rtkore:::CppFlags()"`
 
 export STK_CPPFLAGS
@@ -45,9 +42,14 @@ export STK_CXXFLAGS
 export LIB_MIXALL_A
 
 
+## compilation start here
+.PHONY: all mixall
+
 all: $(SHLIB)
 $(SHLIB): mixall
 
 mixall:
 	(cd ../inst && $(MAKE))
 	(cd ../inst && $(MAKE) clean)
+
+

@@ -75,7 +75,7 @@ class Gamma_aj_bk: public GammaBase< Gamma_aj_bk<Array> >
   public:
     typedef GammaBase< Gamma_aj_bk<Array> > Base;
     using Base::param_;
-    
+
     using Base::p_data;
     using Base::meanjk;
     using Base::variancejk;
@@ -108,10 +108,10 @@ class Gamma_aj_bk: public GammaBase< Gamma_aj_bk<Array> >
  *  will be set to 1.
  */
 template<class Array>
-void Gamma_aj_bk<Array>::randomInit( CArrayXX const* const& p_tik, CPointX const* const& p_tk) 
+void Gamma_aj_bk<Array>::randomInit( CArrayXX const* const& p_tik, CPointX const* const& p_tk)
 {
-    // compute moments
-    this->moments(p_tik);
+  // compute moments
+  this->moments(p_tik);
   // simulate aj
   for (int j=p_data()->beginCols(); j < p_data()->endCols(); ++j)
   {
@@ -133,9 +133,10 @@ void Gamma_aj_bk<Array>::randomInit( CArrayXX const* const& p_tik, CPointX const
 
 /* Compute the weighted mean and the common variance. */
 template<class Array>
-bool Gamma_aj_bk<Array>::run( CArrayXX const* const& p_tik, CPointX const* const& p_tk) 
+bool Gamma_aj_bk<Array>::run( CArrayXX const* const& p_tik, CPointX const* const& p_tk)
 {
-  if (!this->moments(p_tik)) { return false;}
+  bool flag = true;
+  if (!this->moments(p_tik)) { flag = false;}
   // start estimations of the ajk and bj
   Real qvalue = this->qValue(p_tik, p_tk);
   // enter iterative algorithm
@@ -156,23 +157,40 @@ bool Gamma_aj_bk<Array>::run( CArrayXX const* const& p_tik, CPointX const* const
       y /= this->nbSample();
       x0/= this->nbSample();
       Real x1 = param_.shape_[j];
-      if ((x0 <=0.) || !Arithmetic<Real>::isFinite(x0)) return false;
+      if ((x0 <=0.) || !Arithmetic<Real>::isFinite(x0))
+      { x0 = 1; flag = false;}
       // compute shape
       hidden::invPsi f(y);
-      Real a =  Algo::findZero(f, x0, x1, TOL);
-
+      Real a = x0; // use moment estimate
+      try
+      {
+        a = Algo::findZero(f, x0, x1, 1e-08);
+      }
+      catch (...)
+      {
+    #ifdef STK_MIXTURE_DEBUG
+          stk_cout << "ML estimation failed in Gamma_aj_bk::run( CArrayXX const* const& p_tik, CPointX const* const& p_tk) \n";
+          stk_cout << "x0 =" << x0 << _T("\n";);
+          stk_cout << "f(x0) =" << f(x0) << _T("\n";);
+          stk_cout << "x1 =" << x1 << _T("\n";);
+          stk_cout << "f(x1) =" << f(x1) << _T("\n";);
+    #endif
+          a = x0; // use moment estimate
+          flag = false;
+      }
       if (!Arithmetic<Real>::isFinite(a))
       {
-        param_.shape_[j] = x0; // use moment estimate
 #ifdef STK_MIXTURE_DEBUG
-        stk_cout << _T("ML estimation failed in Gamma_ajk_bj::run( CArrayXX const* const& p_tik, CPointX const* const& p_tk) \n");
+        stk_cout << _T("ML estimation failed in Gamma_aj_bk::run( CArrayXX const* const& p_tik, CPointX const* const& p_tk) \n");
         stk_cout << "x0 =" << x0 << _T("\n";);
         stk_cout << "f(x0) =" << f(x0) << _T("\n";);
         stk_cout << "x1 =" << x1 << _T("\n";);
         stk_cout << "f(x1) =" << f(x1) << _T("\n";);
 #endif
+        a = 1.;
+        flag = false;
       }
-      else { param_.shape_[j] = a;}
+      param_.shape_[j] = a;
       // compute bk
       Real sum = param_.shape_.sum();
       for (int k= p_tik->beginCols(); k < p_tik->endCols(); ++k)
@@ -199,7 +217,7 @@ bool Gamma_aj_bk<Array>::run( CArrayXX const* const& p_tik, CPointX const* const
     stk_cout << _T("qvalue =") << qvalue << _T("\n");
   }
 #endif
-  return true;
+  return flag;
 }
 
 }  // namespace STK

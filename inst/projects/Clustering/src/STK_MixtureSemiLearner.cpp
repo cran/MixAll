@@ -34,11 +34,11 @@
 
 #include <cmath>
 
-#ifdef STK_MIXTURE_DEBUG
+#if STK_MIXTURE_DEBUG | STK_MIXTURE_VERBOSE | STK_MIXTURE_VERY_VERBOSE
 #include <Arrays/include/STK_Display.h>
 #endif
 
-#include "../include/STK_MixtureSemiLearner.h"
+#include <Clustering/include/STK_MixtureSemiLearner.h>
 
 #include <STatistiK/include/STK_Law_Categorical.h>
 #include <STatistiK/include/STK_Stat_Functors.h>

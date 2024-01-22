@@ -33,7 +33,7 @@
  **/
 
 
-#include "../inst/projects/MixAll/MixAll_Util.h"
+#include <MixAll/include/MixAll_Util.h>
 
 /* Compute the gram matrix and store it in the "gram" slot of the component
  *  @param s4_component  the component with the data storing the gram matrix

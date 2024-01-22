@@ -4,7 +4,8 @@
 \name{birds}
 \alias{birds}
 \title{Qualitative data : morphological description of birds}
-\format{A data frame with 69 observations on the following 5 variables.
+\format{
+A data frame with 69 observations on the following 5 variables.
 
 \describe{
   \item{\code{gender}}{a character vector defining the gender (2 modalities, male or female).}
@@ -12,7 +13,8 @@
   \item{\code{collar}}{a character vector describing the collar (5 modalities).}
   \item{\code{sub-caudal}}{a character vector describing the sub-caudal (5 modalities).}
   \item{\code{border}}{a character vector describing the border (3 modalities).}
-}}
+}
+}
 \source{
 Bretagnolle, V., 2007. Personal communication, source: Museum.
 }
