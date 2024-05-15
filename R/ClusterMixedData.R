@@ -61,8 +61,8 @@ NULL
 #' ## get estimated missing values
 #' missingValues(model)
 #'
-#' \dontrun{
-#' ## print model
+#' \donttest{
+#' ## print model (a very detailed output)
 #' print(model)
 #' ## use graphics functions
 #' plot(model)
@@ -325,13 +325,13 @@ setMethod(
 #'
 #'
 #' @seealso \code{\link{plot}}
-#' @examples
-#' \dontrun{
-#'   ## the car data set
-#'   data(car)
-#'   model <- clusterMixedData(car, 3, strategy = clusterFastStrategy())
-#'   plot(model)
-#'   }
+# @examples
+# \donttest{
+#   ## the car data set
+#   data(car)
+#   model <- clusterMixedData(car, 3, strategy = clusterFastStrategy())
+#   plot(model)
+#   }
 #'
 setMethod(
   f="plot",

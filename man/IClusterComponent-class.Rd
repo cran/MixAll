@@ -36,6 +36,4 @@ getSlots("ClusterPoissonComponent")
 }
 \author{
 Serge Iovleff
-
-Serge Iovleff
 }

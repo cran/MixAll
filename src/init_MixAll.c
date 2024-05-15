@@ -1,6 +1,6 @@
 // RegisteringDynamic Symbols
 
-#include <stdlib.h> // for NULL
+//#include <stdlib.h> // for NULL
 
 #include <R_ext/Rdynload.h>
 #include <R_ext/Visibility.h>  // optional

@@ -2,9 +2,10 @@
 \title{News for Package 'MixAll}
 
 
-\section{Changes in MixAll version 1.5.2 (2023-12-01)}{
+\section{Changes in MixAll version 1.5.12 (2024-01-22)}{
  \itemize{
   \item Correcting potentially insecure problem with error messages
+  \item Modify Makevars in order to compile MixAll on (devel) windows platform
   \item Updating documentation
   }
 }

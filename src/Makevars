@@ -1,53 +1,40 @@
-#------------------------------------------------------------------------
-#   Copyright (C) 2014-2018  Serge Iovleff, University Lille1, Inria
-#
-#   This program is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
-#
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License
-#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#------------------------------------------------------------------------
-#   Project:    MixAll
-#   Created on: Feb 17, 2014
-#   Authors:    Serge IOVLEFF <serge_DOT_iov..._AT_stkpp_DOT_org>
-#-----------------------------------------------------------------------
-
-## debug flags PKG_CPPFLAGS and STK_CPPFLAGS
-#-DSTK_MIXTURE_DEBUG -DSTK_MIXTURE_VERBOSE -DSTK_MIXTURE_VERY_VERBOSE
-
-# Name of the MixAll library
-
-## Flags needed by STK
-STK_CPPFLAGS  = $(ALL_CPPFLAGS) 
-STK_CXXFLAGS  = $(ALL_CXXFLAGS) $(SHLIB_OPENMP_CXXFLAGS)
-LIB_MIXALL_A = libMixAll.a
-
 ## Flags needed in src
-PKG_LIB_A     = ../inst/lib/libMixAll.a
+PKG_LIB_A    = ../inst/lib/libMixAll.a
 PKG_PROJECTS =  -I../inst/include -I../inst/projects/
 
 ######
 ## Use the R_HOME indirection to support installations of multiple R version
 # flags needed by R
-PKG_LIBS = $(PKG_LIB_A) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(SHLIB_OPENMP_CXXFLAGS)
+PKG_LIBS     = $(PKG_LIB_A) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(SHLIB_OPENMP_CXXFLAGS)
 PKG_CXXFLAGS = `$(R_HOME)/bin$(R_ARCH_BIN)/Rscript -e "rtkore:::CxxFlags()"` $(PKG_PROJECTS)  $(SHLIB_OPENMP_CXXFLAGS)
 PKG_CPPFLAGS = `$(R_HOME)/bin$(R_ARCH_BIN)/Rscript -e "rtkore:::CppFlags()"`
 
-export STK_CPPFLAGS
-export STK_CXXFLAGS
-export LIB_MIXALL_A
 
+## debug flags PKG_CPPFLAGS and STK_CPPFLAGS
+#-DSTK_MIXTURE_DEBUG -DSTK_MIXTURE_VERBOSE -DSTK_MIXTURE_VERY_VERBOSE
+
+## Flags needed in Clustering and MixAll projects
+export STK_CPPFLAGS  = $(ALL_CPPFLAGS) # CPPFLAGS already in ALL_CPPFLAGS 
+export STK_CXXFLAGS  = $(ALL_CXXFLAGS) # CXXFLAGS already in ALL_CXXFLAGS
+export LIB_MIXALL_A = libMixAll.a
+
+.PHONY: all mixall
 
 all: $(SHLIB)
 $(SHLIB): mixall
 
 mixall:
-	(cd ../inst && $(MAKE))
+	(cd ../inst && $(MAKE) CXX="$(CXX)" AR="$(AR)" ARFLAGS="$(ARFLAGS)" CXXFLAGS="$(CXXFLAGS)" CPPFLAGS="$(CPPFLAGS)" CXXPICFLAGS="$(CXXPICFLAGS)")
 	(cd ../inst && $(MAKE) clean)
+
+# From Kurt Hornick on R-project.org
+# You need to pass at least 
+#  CXX CXXFLAGS CXXPICFLAGS
+#
+# to the compilation in the subdirs to ensure that the same compiler (and
+# flags) are used.  I.e.,
+# (cd $(COCLUSTDIR) && $(MAKE) CXX=$(CXX) .......)
+#
+#Hth
+#-k
+	

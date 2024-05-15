@@ -72,7 +72,7 @@ model <- kmm( data=bullsEye, nbCluster=2:3, models= "kmm_pk_s")
 ## get summary
 summary(model)
 ## use graphics functions
-\dontrun{
+\donttest{
 plot(model)
 }
 

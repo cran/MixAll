@@ -39,7 +39,7 @@ MIXALL_BIN_DIR = bin/
 MIXALL_LIB_DIR = lib/
 MIXALL_LIB = $(MIXALL_LIB_DIR)$(LIB_MIXALL_A)
 
-## For debug in git direcgtory
+## For debug in git directory
 # check if we are using symoblic paths
 # PROJECTS_DIR, INCLUDES_DIR and BIN_DIR are needed when compiling projects
 TOP_DIR      = ../../../
@@ -64,10 +64,11 @@ lib: $(MIXALL_LIB)
 echo:
 	@echo $(BIN_DIR)
 	@echo $(PROJECTS_DIR)
-	@echo $(R_ARCH)
-	@echo $(CXXFLAGS)
 	@echo $(CXXPICFLAGS)
 	@echo $(STK_CXXFLAGS)
+	@echo $(STK_CPPFLAGS)
+	@echo $(AR)
+	@echo $(R_ARCH)
 
 #-----------------------------------------------------------------------
 # projects paths
@@ -80,7 +81,7 @@ SRC_MIXALL_DIR= $(MIXALL_DIR)src/
 #-----------------------------------------------------------------------
 # projects binaries
 CLUSTERING_OBJS= $(patsubst $(SRC_CLUSTERING_DIR)%.cpp, $(MIXALL_BIN_DIR)%.o, $(wildcard $(SRC_CLUSTERING_DIR)*.cpp))
-MIXALL_OBJS= $(patsubst $(SRC_MIXALL_DIR)%.cpp, $(MIXALL_BIN_DIR)%.o, $(wildcard $(SRC_MIXALL_DIR)*.cpp))
+MIXALL_OBJS=     $(patsubst $(SRC_MIXALL_DIR)%.cpp,     $(MIXALL_BIN_DIR)%.o, $(wildcard $(SRC_MIXALL_DIR)*.cpp))
 
 #-----------------------------------------------------------------------
 # rules for compiling each projects
@@ -107,7 +108,7 @@ $(MIXALL_LIB): obj
 
 #-----------------------------------------------------------------------
 # rules for cleaning objects
-.PHONY: clean clean_lib clean_objs clean_clustering
+.PHONY: clean clean_lib clean_objs clean_clustering clean_all
 
 clean: clean_objs
 
@@ -115,6 +116,11 @@ clean_lib:
 	$(RM) $(MIXALL_LIB)
 
 clean_objs:
+	$(RM) $(CLUSTERING_OBJS)
+	$(RM) $(MIXALL_OBJS)
+
+clean_all:
+	$(RM) $(MIXALL_LIB)
 	$(RM) $(CLUSTERING_OBJS)
 	$(RM) $(MIXALL_OBJS)
 	

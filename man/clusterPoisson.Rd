@@ -52,14 +52,14 @@ model <- clusterPoisson( data=dt, nbCluster=2
                        , strategy = clusterFastStrategy())
 
 ## use graphics functions
-\dontrun{
+\donttest{
 plot(model)
 }
 
 ## get summary
 summary(model)
-## print model
-\dontrun{
+\donttest{
+## print model (a very detailed output)
 print(model)
 }
 ## get estimated missing values

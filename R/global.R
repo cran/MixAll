@@ -37,7 +37,7 @@
 #' @rdname missingValues-methods
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' ## add 10 missing values as random
 #' data(geyser)
 #' x = as.matrix(geyser); n <- nrow(x); p <- ncol(x);

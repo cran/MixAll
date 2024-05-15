@@ -160,7 +160,7 @@ kmmStrategy <- function( nbTry =1
 #' ## get summary
 #' summary(model)
 #' ## use graphics functions
-#' \dontrun{
+#' \donttest{
 #' plot(model)
 #' }
 #'
@@ -227,8 +227,8 @@ kmm <- function( data, nbCluster=2
   if (resFlag != TRUE )
   { 
     msg_error <- model@msg_error
-    cat("WARNING: An error occur during the clustering process.\n")
-    cat("Collected error:",msg_error)
+    message("WARNING: An error occur during the clustering process.\n")
+	message("Collected error:",msg_error)
   }
   model
 }
@@ -583,7 +583,7 @@ setMethod(
 #'
 #' @seealso \code{\link{plot}}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'  ## the bull eyes data set
 #'   data(bullsEye)
 #'   model <- kmm( bullsEye, 2, models= "kmm_pk_s")
@@ -610,7 +610,7 @@ setMethod(
         else # names of the variables to plot are given
         {
           if ( sum(y %in% colnames(data)) != length(y) )
-          { stop(cat("In plot, unknown variables: ", paste(y[which(!(y %in% colnames(data)))]),"\n"))}
+          { stop("In plot, unknown variables: ", paste(y[which(!(y %in% colnames(data)))]),"\n") }
         }
       }
       # scatter plot
@@ -634,7 +634,7 @@ setMethod(
 #'
 #' @seealso \code{\link{plot}}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'  ## the bull eyes data set
 #'   data(bullsEye)
 #'   model <- kmm( bullsEye, 2, models= "kmm_pk_s")

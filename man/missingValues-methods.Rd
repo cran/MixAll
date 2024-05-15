@@ -57,7 +57,7 @@ The missing methods allow the user to get the imputed mssing
 values from a mixture model.
 }
 \examples{
-\dontrun{
+\donttest{
 ## add 10 missing values as random
 data(geyser)
 x = as.matrix(geyser); n <- nrow(x); p <- ncol(x);

@@ -19,15 +19,6 @@
 Plotting data from a [\code{\linkS4class{ClusterMixedDataModel}}] object
 using the estimated parameters and partition.
 }
-\examples{
-\dontrun{
-  ## the car data set
-  data(car)
-  model <- clusterMixedData(car, 3, strategy = clusterFastStrategy())
-  plot(model)
-  }
-
-}
 \seealso{
 \code{\link{plot}}
 }

@@ -20,7 +20,8 @@ Plotting data from a [\code{\linkS4class{KmmMixedDataModel}}] object
 using the estimated parameters and partition.
 }
 \examples{
-\dontrun{
+\donttest{
+## The bullsEye data set
 data(bullsEye)
 data(bullsEye.cat)
 ## with default values

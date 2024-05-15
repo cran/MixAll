@@ -42,7 +42,6 @@ NULL
 #' @name IClusterComponent
 #' @rdname IClusterComponent-class
 #' @aliases IClusterComponent-class
-#' 
 setClass(
   Class = "IClusterComponent",
   representation( data      = "matrix"

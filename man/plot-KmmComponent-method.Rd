@@ -20,7 +20,7 @@ Plotting data from a [\code{\linkS4class{KmmComponent}}] object
 using the estimated partition.
 }
 \examples{
-\dontrun{
+\donttest{
  ## the bull eyes data set
   data(bullsEye)
   model <- kmm( bullsEye, 2, models= "kmm_pk_s")

@@ -22,8 +22,8 @@ Plotting data from a [\code{\linkS4class{ClusterGamma}}] object
 using the estimated parameters and partition.
 }
 \examples{
-  ## for quantitative case
-\dontrun{
+\donttest{
+  ## Example with quantitative vairables
   data(iris)
   model <- clusterGamma( data=iris[1:4], nbCluster=3
                        , models=clusterGammaNames(prop = "equal")

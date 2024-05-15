@@ -113,11 +113,12 @@ model <- learnDiagGaussian( data=x, labels= z, prop = c(1/3,1/3,1/3)
 summary(model)
 
 ## use graphics functions
-\dontrun{
+\donttest{
 plot(model)
 }
-## print model
-\dontrun{
+
+\donttest{
+## print model (a detailed and very long output)
 print(model)
 }
 

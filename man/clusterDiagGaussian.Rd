@@ -56,14 +56,14 @@ model <- clusterDiagGaussian( data=x, nbCluster=2:3
                             )
 
 ## use graphics functions
-\dontrun{
+\donttest{
 plot(model)
 }
 
 ## get summary
 summary(model)
-## print model
-\dontrun{
+\donttest{
+## print model (a detailed and very long output)
 print(model)
 }
 ## get estimated missing values

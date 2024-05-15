@@ -61,14 +61,14 @@ NULL
 #'                             )
 #'
 #' ## use graphics functions
-#' \dontrun{
+#' \donttest{
 #' plot(model)
 #' }
 #'
 #' ## get summary
 #' summary(model)
-#' ## print model
-#' \dontrun{
+#' \donttest{
+#' ## print model (a detailed and very long output)
 #' print(model)
 #' }
 #' ## get estimated missing values
@@ -391,8 +391,8 @@ setMethod(
 #'
 #' @seealso \code{\link{plot}}
 #' @examples
+#' \donttest{
 #'   ## the famous iris data set
-#' \dontrun{
 #'   data(iris)
 #'   model <- clusterDiagGaussian(iris[1:4], 3, strategy = clusterFastStrategy())
 #'   plot(model)

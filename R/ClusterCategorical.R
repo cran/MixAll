@@ -61,14 +61,14 @@ NULL
 #'                            )
 #'
 #' ## use graphics functions
-#' \dontrun{
+#' \donttest{
 #' plot(model)
 #' }
 #'
 #' ## get summary
 #' summary(model)
-#' ## print model
-#' \dontrun{
+#' \donttest{
+#' ## print model (a detailed and very long output)
 #' print(model)
 #' }
 #' ## get estimated missing values
@@ -432,8 +432,8 @@ setMethod(
 #'
 #' @seealso \code{\link{plot}}
 #' @examples
-#'   ## the car data set
-#' \dontrun{
+#' \donttest{
+#'   ## the car data set (verify car data is in your environment)
 #'   data(car)
 #'   model <- clusterCategorical(car, 3, strategy = clusterFastStrategy())
 #'   plot(model)

@@ -63,7 +63,7 @@ NULL
 #' summary(model)
 #'
 #'
-#' \dontrun{
+#' \donttest{
 #' ## use graphics functions
 #' plot(model)
 #' }
@@ -336,7 +336,8 @@ setMethod(
 #'
 #' @seealso \code{\link{plot}}
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' ## The bullsEye data set
 #' data(bullsEye)
 #' data(bullsEye.cat)
 #' ## with default values
@@ -367,7 +368,9 @@ setMethod(
         stop("y should not be greater than the number of data set")
     }
     #
-    par(mfrow=c(1, length(y)), pty="s")
+	oldpar <- par(no.readonly = TRUE) # code line i
+	on.exit(par(oldpar)) # code line i + 1
+	par(mfrow=c(1, length(y)), pty="s")
     for (i in y)
     {
       plot(x@lcomponent[[i]], x@zi,...)

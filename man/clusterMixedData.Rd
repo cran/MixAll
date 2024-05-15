@@ -56,8 +56,8 @@ summary(model)
 ## get estimated missing values
 missingValues(model)
 
-\dontrun{
-## print model
+\donttest{
+## print model (a very detailed output)
 print(model)
 ## use graphics functions
 plot(model)

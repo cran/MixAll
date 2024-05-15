@@ -38,12 +38,12 @@
 #include <omp.h>
 #endif
 
+#include <Rinternals.h> // for SEXP
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include <Rinternals.h> // for SEXP
 
 // mixture models
 /** @param model any model derived from IClusterModel S4 class

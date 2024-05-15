@@ -21,8 +21,8 @@ Plotting data from a [\code{\linkS4class{ClusterDiagGaussian}}] object
 using the estimated parameters and partition.
 }
 \examples{
+\donttest{
   ## the famous iris data set
-\dontrun{
   data(iris)
   model <- clusterDiagGaussian(iris[1:4], 3, strategy = clusterFastStrategy())
   plot(model)

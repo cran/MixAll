@@ -59,7 +59,7 @@ model <- kmmMixedData(ldata, lmodels, nbCluster=2:5, strategy = clusterFastStrat
 summary(model)
 
 
-\dontrun{
+\donttest{
 ## use graphics functions
 plot(model)
 }

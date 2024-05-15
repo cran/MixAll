@@ -73,11 +73,12 @@ NULL
 #' summary(model)
 #' 
 #' ## use graphics functions
-#' \dontrun{
+#' \donttest{
 #' plot(model)
 #' }
-#' ## print model
-#' \dontrun{
+#'
+#' \donttest{
+#' ## print model (a detailed and very long output)
 #' print(model)
 #' }
 #' 
@@ -155,7 +156,7 @@ learnPoisson <- function( data, labels, prop = NULL
   # start estimation of the models
   resFlag = .Call("learnMixture", model, models, algo, nbCore, PACKAGE="MixAll");
   # set names
-  if (resFlag != TRUE ) {cat("WARNING: An error occur during the learning process");}
+  if (resFlag != TRUE ) {message("WARNING: An error occur during the learning process");}
   colnames(model@component@lambda)  <- colnames(model@component@data);
   model
 }
@@ -190,7 +191,7 @@ learnGamma <- function( data, labels, prop = NULL
   # start estimation of the models
   resFlag = .Call("learnMixture", model, models, algo, nbCore, PACKAGE="MixAll");
   # set names
-  if (resFlag != TRUE ) {cat("WARNING: An error occur during the learning process");}
+  if (resFlag != TRUE ) {message("WARNING: An error occur during the learning process");}
   colnames(model@component@shape) <- colnames(model@component@data);
   colnames(model@component@scale) <- colnames(model@component@data);
   model
@@ -226,7 +227,7 @@ learnCategorical <- function( data, labels, prop = NULL
   # start estimation of the models
   resFlag = .Call("learnMixture", model, models, algo, nbCore, PACKAGE="MixAll");
   # set names
-  if (resFlag != TRUE ) {cat("WARNING: An error occur during the learning process");}
+  if (resFlag != TRUE ) {message("WARNING: An error occur during the learning process");}
   dim(model@component@plkj) <- c(model@component@nbModalities, model@nbCluster, ncol(data));
   model
 }
@@ -273,8 +274,8 @@ learnCategorical <- function( data, labels, prop = NULL
 #' ## get estimated missing values
 #' missingValues(model)
 #'
-#' \dontrun{
-#' ## print model
+#' \donttest{
+#' ## print model (a detailed and very long output)
 #' print(model)
 #' ## use graphics functions
 #' plot(model)
@@ -343,7 +344,7 @@ learnMixedData <- function( data, models, labels, prop = NULL
     resFlag = .Call("learnMixedData", model, algo, nbCore, PACKAGE="MixAll");
   }
   # set names
-  if (resFlag != TRUE) {cat("WARNING: An error occurs during the clustering process");}
+  if (resFlag != TRUE) {message("WARNING: An error occurs during the clustering process");}
   for (i in 1:length(data))
   {
     if(clusterValidCategoricalNames(models[i]))

@@ -20,8 +20,8 @@ Plotting data from a [\code{\linkS4class{ClusterCategorical}}] object
 using the estimated parameters and partition.
 }
 \examples{
-  ## the car data set
-\dontrun{
+\donttest{
+  ## the car data set (verify car data is in your environment)
   data(car)
   model <- clusterCategorical(car, 3, strategy = clusterFastStrategy())
   plot(model)

@@ -49,7 +49,9 @@
     }
   }
   # get old par
-  op <- par(no.readonly = TRUE) # the whole list of settable par's.
+  oldpar <- par(no.readonly = TRUE) # code line i
+  on.exit(par(oldpar)) # code line i + 1
+  
   # cluster parameters
   par(mar = rep(2.5,4), cex = .75, oma = c(0, 0, 3, 0))        # margin and font size
   nbCol = length(y)                       # size of the matrix screen
@@ -104,7 +106,7 @@
   }
   #  mtext("Visualisation using latent logistic representation", outer = TRUE, cex = 1.5)
   close.screen(all.screens = TRUE)
+  
   # restore plotting parameters
-  par(op)
   invisible()
 }

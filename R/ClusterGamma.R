@@ -61,14 +61,15 @@ NULL
 #'                      , models="gamma_pk_ajk_bjk"
 #'                      , strategy = clusterFastStrategy())
 #'
-#' \dontrun{
+#' ## use plot
+#' \donttest{
 #' plot(model)
 #' }
 #'
 #' ## get summary
 #' summary(model)
-#' ## print model
-#' \dontrun{
+#' \donttest{
+#' ## print model (a detailed and very long output)
 #' print(model)
 #' }
 #' ## get estimated missing values
@@ -390,8 +391,8 @@ setMethod(
 #'
 #' @seealso \code{\link{plot}}
 #' @examples
-#'   ## for quantitative case
-#' \dontrun{
+#' \donttest{
+#'   ## Example with quantitative vairables
 #'   data(iris)
 #'   model <- clusterGamma( data=iris[1:4], nbCluster=3
 #'                        , models=clusterGammaNames(prop = "equal")

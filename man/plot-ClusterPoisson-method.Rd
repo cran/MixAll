@@ -22,8 +22,8 @@ Plotting data from a [\code{\linkS4class{ClusterPoisson}}] object
 using the estimated parameters and partition.
 }
 \examples{
-  ## for quantitative case
-\dontrun{
+\donttest{
+  ## Example with counting data
   data(DebTrivedi)
   dt <- DebTrivedi[, c(1, 6,8, 15)]
   model <- clusterPoisson(iris[1:4], 3, strategy = clusterFastStrategy())
